@@ -1,0 +1,41 @@
+body {
+    color: #fff !important;
+    font-family: sans-serif !important;
+    text-align: center !important;
+}
+
+.overflow-wrap {
+    overflow-x: hidden;
+}
+
+section {
+    line-height: 18pt;
+    padding: 100px 0 130 0;
+    position: relative;
+}
+
+section:nth-of-type(1) {
+    height: calc(100vh + 53px);
+    padding: 0 10px;
+}
+
+section:nth-of-type(1) .text{
+    font-size: 32pt;
+    line-height: 36pt;
+    z-index: 1;
+}
+
+.canvas {
+    height: 100%;
+    width: 100vw;
+    position: absolute;
+    left: 0;
+    top: 0;
+}
+
+.flex {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
