@@ -394,7 +394,7 @@ ninja.data = [{
         title: 'email',
         section: 'Socials',
         handler: () => {
-          window.open("mailto:%79%6F%75@%65%78%61%6D%70%6C%65.%63%6F%6D", "_blank");
+          window.open("mailto:%67%61%62%72%69%65%6C.%6C%61%75%7A%69%65%72@%75%73%68%65%72%62%72%6F%6F%6B%65.%63%61", "_blank");
         },
       },{
         id: 'social-github',
@@ -408,7 +408,7 @@ ninja.data = [{
         title: 'LinkedIn',
         section: 'Socials',
         handler: () => {
-          window.open("https://www.linkedin.com/in/Gabriel Lauzier", "_blank");
+          window.open("https://www.linkedin.com/in/gabriel-lauzier", "_blank");
         },
       },{
       id: 'light-theme',
