@@ -397,11 +397,21 @@ ul.task-list input[type="checkbox"] {
 
 // Social (bottom)
 
+.header-subtitle{
+  margin-bottom: 0;
+}
+
+@media (max-width: 576px) {
+  .ifcellphone {
+    margin-bottom: 2rem;
+  }
+}
+
 .social {
-  text-align: center;
+  text-align: left;
 
   .contact-icons {
-    font-size: 4rem;
+    font-size: 3rem;
 
     a {
       img {
