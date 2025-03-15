@@ -8,76 +8,29 @@ category: posters
 related_publications: false
 ---
 
-# Guidage dynamique par champs vectoriel pour le suivi de trajectoire
+---
+## Guidage dynamique par champs vectoriel pour le suivi de trajectoire
 
-Every project has a beautiful feature showcase page.
-It's easy to include images in a flexible 3-column grid format.
-Make your photos 1/3, 2/3, or full width.
+<br>
 
-To give your project a background in the portfolio page, just add the img tag to the front matter like so:
+**TODO:** Ajouter figure (gif) et le pdf de l'affiche
 
-    ---
-    layout: page
-    title: project
-    description: a project with a background image
-    img: /assets/img/12.jpg
-    ---
+<br>
 
-<div class="row">
-    <div class="col-sm mt-3 mt-md-0">
-        {% include figure.liquid loading="eager" path="assets/img/1.jpg" title="example image" class="img-fluid rounded z-depth-1" %}
-    </div>
-    <div class="col-sm mt-3 mt-md-0">
-        {% include figure.liquid loading="eager" path="assets/img/3.jpg" title="example image" class="img-fluid rounded z-depth-1" %}
-    </div>
-    <div class="col-sm mt-3 mt-md-0">
-        {% include figure.liquid loading="eager" path="assets/img/5.jpg" title="example image" class="img-fluid rounded z-depth-1" %}
-    </div>
-</div>
-<div class="caption">
-    Caption photos easily. On the left, a road goes through a tunnel. Middle, leaves artistically fall in a hipster photoshoot. Right, in another hipster photoshoot, a lumberjack grasps a handful of pine needles.
-</div>
-<div class="row">
-    <div class="col-sm mt-3 mt-md-0">
-        {% include figure.liquid loading="eager" path="assets/img/5.jpg" title="example image" class="img-fluid rounded z-depth-1" %}
-    </div>
-</div>
-<div class="caption">
-    This image can also have a caption. It's like magic.
-</div>
+#### Résumé
+La majorité des fonds marins reste inexplorée, en partie, en raison de la dépendance de l'humain pour collecter des
+données dans un tel environnement. En effet, les ressources humaines sont limitées, surtout pour des acquisitions de
+données prolongées. L'utilisation de véhicules de surface autonomes semble être efficace pour augmenter l'efficacité des
+acquisitions de données, mais ces derniers restent limités en raison de l'environnement maritime hautement imprévisible
+et non linéaire. L'apprentissage par renforcement se présente donc comme une solution prometteuse pour supporter les
+activités d'exploration maritime.
 
-You can also put regular text between your rows of images, even citations {% cite einstein1950meaning %}.
-Say you wanted to write a bit about your project before you posted the rest of the images.
-You describe how you toiled, sweated, _bled_ for your project, and then... you reveal its glory in the next row of images.
+L'apprentissage par renforcement pose cependant plusieurs défis comme le risque et les coûts liés à l'acquisition de
+données et la difficulté à définir une fonction de récompense optimale. La résolution de ces défis résulte en des
+architectures complexes et difficiles à implémenter. Une approche d'apprentissage par imitation pour le guidage dynamique
+par champs vectoriels de véhicules de surface est donc proposée. Cette proposition consiste en la récupération d'un champ
+vectoriel avec un modèle génératif par diffusion de bruit dans le but de guider le véhicule vers des états plus probable
+observé lors de l'entraînement.
 
-<div class="row justify-content-sm-center">
-    <div class="col-sm-8 mt-3 mt-md-0">
-        {% include figure.liquid path="assets/img/6.jpg" title="example image" class="img-fluid rounded z-depth-1" %}
-    </div>
-    <div class="col-sm-4 mt-3 mt-md-0">
-        {% include figure.liquid path="assets/img/11.jpg" title="example image" class="img-fluid rounded z-depth-1" %}
-    </div>
-</div>
-<div class="caption">
-    You can also have artistically styled 2/3 + 1/3 images, like these.
-</div>
-
-The code is simple.
-Just wrap your images with `<div class="col-sm">` and place them inside `<div class="row">` (read more about the <a href="https://getbootstrap.com/docs/4.4/layout/grid/">Bootstrap Grid</a> system).
-To make images responsive, add `img-fluid` class to each; for rounded corners and shadows use `rounded` and `z-depth-1` classes.
-Here's the code for the last row of images above:
-
-{% raw %}
-
-```html
-<div class="row justify-content-sm-center">
-  <div class="col-sm-8 mt-3 mt-md-0">
-    {% include figure.liquid path="assets/img/6.jpg" title="example image" class="img-fluid rounded z-depth-1" %}
-  </div>
-  <div class="col-sm-4 mt-3 mt-md-0">
-    {% include figure.liquid path="assets/img/11.jpg" title="example image" class="img-fluid rounded z-depth-1" %}
-  </div>
-</div>
-```
-
-{% endraw %}
+À terme, ce projet de maîtrise vise à rendre robuste, polyvalent et à simplifier l'architecture d'un système de contrôle pour
+véhicules de surface autonome dans le but de faciliter les applications dans des environnements maritimes.
