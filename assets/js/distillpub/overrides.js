@@ -7,6 +7,8 @@ $(document).ready(function() {
             .insertRule(".panel {background-color: var(--global-bg-color) !important;}");
         footnote.shadowRoot.querySelector("d-hover-box").shadowRoot.querySelector("style").sheet
             .insertRule(".panel {border-color: var(--global-divider-color) !important;}");
+        footnote.shadowRoot.querySelector("d-hover-box").shadowRoot.querySelector("style").sheet
+            .insertRule(".panel {text-align: left !important;}");
     });
     // Override styles of the citations.
     document.querySelectorAll("d-cite").forEach(function(cite) {
@@ -20,5 +22,7 @@ $(document).ready(function() {
             .insertRule(".panel {background-color: var(--global-bg-color) !important;}");
         cite.shadowRoot.querySelector("d-hover-box").shadowRoot.querySelector("style").sheet
             .insertRule(".panel {border-color: var(--global-divider-color) !important;}");
+        cite.shadowRoot.querySelector("d-hover-box").shadowRoot.querySelector("style").sheet
+            .insertRule(".panel {text-align: left !important;}");
     });
 })

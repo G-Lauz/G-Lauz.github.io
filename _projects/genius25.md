@@ -18,16 +18,15 @@ category: posters
 related_publications: false
 ---
 
-# Guidage dynamique par champs vectoriel pour le suivi de trajectoire
+# Guidage dynamique par champs vectoriel pour le suivi de trajectoire <a href="/assets/pdf/genius25_poster.pdf" target="_blank" rel="noopener noreferrer" class="btn z-depth-0 btn-pdf">PDF</a>
 
-**TODO:** Ajouter figure (gif) et le pdf de l'affiche
 <div class="row justify-content-sm-center">
     <div class="col-sm mt-3 mt-md-0">
         {% include figure.liquid path="assets/img/zoomed_vector_field_over_trajectory_nodpi.gif" title="Vector Field Over a Trajectory" class="img-fluid rounded z-depth-1" %}
     </div>
-    <div class="caption">
-        <b>Figure 1)</b> Champs vectoriel généré par diffusion de bruit basé sur des démonstrations d'experts pour une tâche de suivi de trajectoire. La région en bleu représente l'état le plus probable où le véhicule devrait se diriger pour satisfaire l'objectif.
-    </div>
+</div>
+<div class="caption">
+    <b>Figure 1)</b> Champs vectoriel généré par diffusion de bruit basé sur des démonstrations d'experts pour une tâche de suivi de trajectoire. La région en bleu représente l'état le plus probable où le véhicule devrait se diriger pour satisfaire l'objectif.
 </div>
 
 ## Résumé
@@ -51,8 +50,16 @@ véhicules de surface autonome dans le but de faciliter les applications dans de
 <br>
 
 ## Travaux connexes
-### Diffusion Policy
-Test citation <d-cite key="chi_diffusion_2023"></d-cite>
+### <i>Diffusion Policy</i>
+
+<div class="row justify-content-sm-center">
+    <div class="col-sm mt-3 mt-md-0">
+        {% include video.liquid path="https://diffusion-policy.cs.columbia.edu/videos/highlight_sauce.mp4" title="Sauce Pour Task" class="img-fluid rounded z-depth-1" controls=true autoplay=true loop=true playsinline=true muted=true %}
+    </div>
+</div>
+<div class="caption">
+    <b>Figure 2)</b> Deux bras manipulateur utilisant l'algorithme de <i>Diffusion Policy</i> <d-cite key="chi_diffusion_2024"></d-cite> pour étendre de la sauce à pizza malgré des perturbations externes. <d-footnote><a href="https://diffusion-policy.cs.columbia.edu/">https://diffusion-policy.cs.columbia.edu/</a></d-footnote>
+</div>
 
 <br>
 
