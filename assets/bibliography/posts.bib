@@ -1,0 +1,10 @@
+@article{chi_diffusion_2023,
+	title = {Diffusion Policy: Visuomotor Policy Learning via Action Diffusion},
+    shorttitle = {Diffusion Policy},
+    author = {Cheng Chi and Zhenjia Xu and Siyuan Feng and Eric Cousineau and Yilun Du and Benjamin Burchfiel and Russ Tedrake and Shuran Song},
+	journal = {The International Journal of Robotics Research},
+    doi = {10.1177/02783649241273668},
+    url = {https://doi.org/10.1177/02783649241273668},
+    eprint = {https://doi.org/10.1177/02783649241273668},
+    abstract = { This paper introduces Diffusion Policy, a new way of generating robot behavior by representing a robot’s visuomotor policy as a conditional denoising diffusion process. We benchmark Diffusion Policy across 15 different tasks from 4 different robot manipulation benchmarks and find that it consistently outperforms existing state-of-the-art robot learning methods with an average improvement of 46.9\%. Diffusion Policy learns the gradient of the action-distribution score function and iteratively optimizes with respect to this gradient field during inference via a series of stochastic Langevin dynamics steps. We find that the diffusion formulation yields powerful advantages when used for robot policies, including gracefully handling multimodal action distributions, being suitable for high-dimensional action spaces, and exhibiting impressive training stability. To fully unlock the potential of diffusion models for visuomotor policy learning on physical robots, this paper presents a set of key technical contributions including the incorporation of receding horizon control, visual conditioning, and the time-series diffusion transformer. We hope this work will help motivate a new generation of policy learning techniques that are able to leverage the powerful generative modeling capabilities of diffusion models. Code, data, and training details are available (diffusion-policy.cs.columbia.edu). },
+}
