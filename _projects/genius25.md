@@ -2,7 +2,7 @@
 layout: distill
 title: GENIUS 2025
 # date: 2025-03-26 17:00:00-0400
-date: 2025-03-18 17:00:00-0400
+date: 2025-03-25 11:00:00-0400
 description: Présentation par affiche pour la soirée scientifique GENIUS 2025
 
 authors:
@@ -22,14 +22,14 @@ related_publications: false
 
 <div class="row justify-content-sm-center">
     <div class="col-sm mt-3 mt-md-0">
-        {% include figure.liquid path="assets/img/zoomed_vector_field_over_trajectory_nodpi.gif" title="Vector Field Over a Trajectory" class="img-fluid rounded z-depth-1" %}
+        {% include figure.liquid path="assets/img/zoomed_vector_field_over_trajectory_nodpi.gif" title="Vector Field Over a Trajectory" class="img-fluid rounded z-depth-1" zoomable=true %}
     </div>
 </div>
 <div class="caption">
     <b>Figure 1)</b> Champs vectoriel généré par diffusion de bruit basé sur des démonstrations d'experts pour une tâche de suivi de trajectoire. La région en bleu représente l'état le plus probable où le véhicule devrait se diriger pour satisfaire l'objectif.
 </div>
 
-## Résumé
+## Introduction
 La majorité des fonds marins reste inexplorée, en partie, en raison de la dépendance de l'humain pour collecter des
 données dans un tel environnement. En effet, les ressources humaines sont limitées, surtout pour des acquisitions de
 données prolongées. L'utilisation de véhicules de surface autonomes semble être efficace pour augmenter l'efficacité des
@@ -49,16 +49,15 @@ véhicules de surface autonome dans le but de faciliter les applications dans de
 
 ## Fondements théoriques
 ### Modèles génératifs par diffusion de bruit
-
-Les modèles de diffusion probabiliste **cite ho dickenson song** font partie d'une classe de modèle génératif derrière les récents succès de modèles comme *StableDiffusion* **cite esser podell rombach** qui permet de générer des images à partir d'une requête textuelle. Ces modèles fonctionnent en procédant au débruitage itératif d'une image originalement bruitée jusqu'à l'obtention d'une image nette.
+Les modèles de diffusion probabiliste <d-cite key="ho_denoising_2020,sohl-dickstein_deep_2015,song_generative_2019"></d-cite> font partie d'une classe de modèle génératif derrière les récents succès de modèles comme *StableDiffusion* <d-cite key="esser_scaling_2024,podell_sdxl_2024,rombach_high-resolution_2022"></d-cite> qui permet de générer des images à partir d'une requête textuelle. Ces modèles fonctionnent en procédant au débruitage itératif d'une image originalement bruitée jusqu'à l'obtention d'une image nette.
 
 <div class="row justify-content-sm-center">
     <div class="col-sm mt-3 mt-md-0">
-        {% include figure.liquid path="assets/img/diffusion_processes.png" title="Forward and Backward Diffusion" class="img-fluid rounded z-depth-1" %}
+        {% include figure.liquid path="assets/img/diffusion_processes.png" title="Forward and Backward Diffusion" class="img-fluid rounded z-depth-1" zoomable=true %}
     </div>
 </div>
 <div class="caption">
-    <b>Figure 2)</b> Processus de diffusion vers l'avant et l'arrière pour un modèle génératif par diffusion de bruit. <b>cite song_generative_2020</b>
+    <b>Figure 2)</b> Processus de diffusion vers l'avant et l'arrière pour un modèle génératif par diffusion de bruit. <d-cite key="song_score-based_2023"></d-cite>
 </div>
 
 <!-- Song et al. généralise ce concept en proposant un modèle de diffusion de bruit basé sur une fonction de score **cite song_generative_2020** et décrit le processus de diffusion avec une équation différentielle stochastique (*Stochastic Differential Equation* - SDE) d'Itô **cite song_score-based_2021**.
@@ -95,10 +94,19 @@ Ici, $f_\theta(x)$ est la fonction d'énergie du modèle. La fonction de score $
 
 Dans le contexte de la génération d'images, chaque pixel est considéré comme une dimension de l'espace de représentation. Voici donc un exemple simplifié à seulement deux dimensions pour illustrer le concept de diffusion de bruit:
 
-**TODO:** Insérer un GIF de diffusion vers l'avant et l'arrières.
+<div class="row justify-content-sm-center">
+    <div class="col-sm mt-3 mt-md-0">
+        {% include figure.liquid path="assets/img/diffusion_process.gif" title="Forward Diffusion" class="img-fluid rounded z-depth-1" zoomable=true %}
+    </div>
+    <div class="col-sm mt-3 mt-md-0">
+        {% include figure.liquid path="assets/img/reverse_diffusion_process.gif" title="Backward Diffusion" class="img-fluid rounded z-depth-1" zoomable=true %}
+    </div>
+</div>
+<div class="caption">
+    <b>Figure 3)</b> Processus de diffusion et de diffusion en temps inverse sur un ensemble d'échantillons de données en deux dimensions.
+</div>
 
 ### Apprentissage par imitation et modèles de diffusion
-
 L'apprentissage par imitation aussi connu sous le nom d'apprentissage par la démonstration consiste à apprendre un comportement à partir d'exemples d'experts. L'avantage de cette approche est l'élimination du besoin de définir une fonction de récompense manuellement, une tâche difficile et coûteuse en temps. L'apprentissage par imitation est donc une approche prometteuse pour l'apprentissage de politiques de contrôle dans des environnements complexes.
 
 Une technique récement à l'état de l'art dans ce domaine est l'approche proposée avec *Diffusion Policy* <d-cite key="chi_diffusion_2024"></d-cite>. Basé sur les modèles de diffusion de bruit, cette technique permet d'apprendre une politique de contrôle pour une tâche données. L'approche consiste à prédire la distribution de probabilité de l'action à prend à partir de l'état actuel du système. Cette distribution d'action est ensuite échantillonnée pour obtenir l'action à prendre.
@@ -115,7 +123,7 @@ Une technique récement à l'état de l'art dans ce domaine est l'approche propo
 Le problème avec cette approche réside dans le fonctionnement de l'algorithme de diffusion de bruit. La nature itérative du processus de diffusion inverse requiert plusieurs appels au réseau de neurones pour obtenir une action. C'est pour pour cette raison qu'il s'agit d'une méthode coûteuse en temps de calcul et peu adaptée pour des applications en temps réel comme le contrôle de véhicules autonomes.
 
 ## Guidage dynamique par champs vectoriel basé sur une fonction de score
-Ce projet de recherche propose un algorithme de guidage dynamique par champs vectoriel pour le suivi de trajectoire. La fondation de cette idée repose sur l'utilisation de la fonction de score utilisée dans les modèles de diffusion de bruit tel que formulé par Song et al. **cite song_score-based_2021**:
+Ce projet de recherche propose un algorithme de guidage dynamique par champs vectoriel pour le suivi de trajectoire. La fondation de cette idée repose sur l'utilisation de la fonction de score utilisée dans les modèles de diffusion de bruit tel que formulé par Song et al. <d-cite key="song_score-based_2023"></d-cite>:
 
 $$
 \begin{equation} \label{eq:score_function}
@@ -127,7 +135,7 @@ Cette fonction de score est le gradient de la fonction d'énergie du modèle et 
 
 <div class="row justify-content-sm-center">
     <div class="col-sm mt-3 mt-md-0">
-        {% include figure.liquid path="assets/img/score_function.png" title="Fonction de score conditionnel à la classe cyan tiré d'une distribution multimodale" class="img-fluid rounded z-depth-1" %}
+        {% include figure.liquid path="assets/img/score_function.png" title="Fonction de score conditionnel à la classe cyan tiré d'une distribution multimodale" class="img-fluid rounded z-depth-1" zoomable=true %}
     </div>
 </div>
 <div class="caption">
@@ -138,7 +146,7 @@ Cette fonction de score est le gradient de la fonction d'énergie du modèle et 
 
 <div class="row justify-content-sm-center">
     <div class="col-sm mt-3 mt-md-0">
-        {% include responsive_figure.liquid path="assets/img/path_following_architecture_horizontal_layout.svg" mobile_path="assets/img/path_following_architecture_vertical_layout.svg" title="Architecture de contrôle en boucle fermée" class="img-fluid rounded z-depth-1" %}
+        {% include responsive_figure.liquid path="assets/img/path_following_architecture_horizontal_layout.svg" mobile_path="assets/img/path_following_architecture_vertical_layout.svg" title="Architecture de contrôle en boucle fermée" class="img-fluid rounded z-depth-1" zoomable=true %}
     </div>
 </div>
 <div class="caption">
@@ -148,6 +156,11 @@ Cette fonction de score est le gradient de la fonction d'énergie du modèle et 
 Ce changement impose une l'utilisation d'un autre contrôleur à plus bas niveau pour transformer le vecteur de direction en une commande pour le véhicule. L'architecture de contrôle en boucle fermée est donc composée ainsi: À son entrée, l'algorithme proposée reçoit une trajectoire en position calculée préalablement par un module de planification de trajectoire. Ensuite, l'algorithme de guidage dynamique par champs vectoriel prédit un vecteur de direction vers l'état le prochain état le plus probable. Ce vecteur est ensuite utilisé par un module régulateur linéaire quadratique (*Linear-Quadratic Regulator* - LQR) qui tranforme le vecteur de direction en un vecteur de force à appliquer au système. Enfin, ce vecteur de force est transformé en une commande pour le contrôle du véhicule par un module de propulsion inverse.
 
 ## Conclusion
+Ce travail de recherche propose une nouvelle approche en matière de suivi de trajectoire pour des véhicule de surface. Le guidage dynamique par champs vectoriel basé sur une fonction de score est un algorithme d'apprentissage par imitation basé sur les algorithmes de diffusion de bruit. L'algorithme proposé est estimé plus rapide que les algorithmes de contrôle par diffusion de bruit actuels et est donc plus adapté pour des applications en temps réel. Ceci s'explique par la l'élimination de la nécessité de procéder à un échantillonnage itératif pour obtenir une action. En plus d'être plus rapide, l'algorithme proposé est plus facile à interpréter en raison des champs vectoriels qu'il est possible de produire à chaque étape de l'algorithme. Cette facilité d'interprétation est un atout pour l'application de cette technique dans le monde réel avec des véhicules autonomes.
+
+L'espace d'observation présentement étudié est de faibles dimensionnalités. Elle consiste en une trajectoire dans laquelle chaque point correspond à une coordonnée en deux dimensions. Pourtant, il est estimé que cette approche pourrait être étendue à un espace d'observation plus plus grand comme celui d'un flux vidéo ou d'une estimation des perturbations de l'environnement. Ainsi, respectivement, il serait possible de rajouter comme fonctionnalité au système de suivi de trajectoire la détection d'obstacle et la compensation de courant ou de vent fort.
+
+À terme, il est anticipé que l'algorithme de guidage dynamique par champs vectoriel facilite l'intégration de système autonomes pour des applications d'exploration, de recherche et sauvetage, de formation de convoi, de surveillance, d'automatisation de livraison de marchandise.
 
 ## Lectures complémentaires
  - <a href="https://yang-song.net/blog/2021/score/" target="_blank" rel="noopener noreferrer"><b>Generative Modeling by Estimating Gradients of the Data Distribution</b></a>: L'excellent blog de Yang Song sur les modèles génératifs qui explique en plus amples détails ces concepts.
