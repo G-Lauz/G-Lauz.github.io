@@ -2,7 +2,7 @@
 layout: distill
 title: GENIUS 2025
 # date: 2025-03-26 17:00:00-0400
-date: 2025-03-25 11:00:00-0400
+date: 2025-03-26 13:00:00-0400
 description: Présentation par affiche pour la soirée scientifique GENIUS 2025
 
 authors:
@@ -20,7 +20,7 @@ related_publications: false
 
 # Guidage dynamique par champs vectoriels pour le suivi de trajectoire <a href="/assets/pdf/genius25_poster.pdf" target="_blank" rel="noopener noreferrer" class="btn z-depth-0 btn-pdf">PDF</a>
 
-<div class="row justify-content-sm-center">
+<div id="path_following_score" class="row justify-content-sm-center">
     <div class="col-sm mt-3 mt-md-0">
         {% include figure.liquid path="assets/img/zoomed_vector_field_over_trajectory_nodpi.gif" title="Vector Field Over a Trajectory" class="img-fluid rounded z-depth-1" zoomable=true %}
     </div>
@@ -132,6 +132,8 @@ $$
 $$
 
 Cette fonction de score est le gradient de la fonction d'énergie du modèle et indique donc la direction dans laquelle les états de l'espace de représentation sont les plus probables. L'idée est donc de récupérer cette fonction de score pour générer un champ vectoriel qui guidera le véhicule vers des états plus probables observés lors de l'entraînement.
+
+Ce champ vectoriel est donc généré à partir de l'environnement observé par le véhicule. Ce dernier est alors utilisé pour générer des lois de commandes qui guideront le véhicule vers des états plus probables, comme le montre la <a href="#path_following_score"><b>figure 1</b></a>, où l'espace observé est l'objectif (le point rouge) à rejoindre sur une trajectoire donnée.
 
 <div class="row justify-content-sm-center">
     <div class="col-sm mt-3 mt-md-0">
