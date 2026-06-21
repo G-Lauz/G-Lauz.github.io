@@ -1,4 +1,4 @@
 User-agent: *
 Disallow:
 
-Sitemap: https://g-lauz.github.io//sitemap.xml
+Sitemap: https://glauz.ca//sitemap.xml
