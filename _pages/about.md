@@ -3,8 +3,9 @@ layout: about
 title: about
 permalink: /
 subtitle: |+
-  Master's student in electrical engineering <br><br>
+  Ph.D.'s student in computer engineering <br><br>
   Lecturer in Probabilistic Artifical Intelligence (<a href='https://www.usherbrooke.ca/admission/fiches-cours/GEI890/'>GEI890</a>/<a href='https://www.usherbrooke.ca/admission/fiches-cours/GEI895/'>GEI895</a>) <br>
+  Lecturer in Reccurent Neural Networks (<a href='https://www.usherbrooke.ca/admission/fiches-cours/GRO722'>GRO722</a>) <br>
   <a href='https://www.usherbrooke.ca/'>Université de Sherbrooke</a>.
 
 profile:
@@ -32,4 +33,4 @@ latest_posts:
 
 Guided by passion and a belief that every problem has a solution, I pursue research in collaboration with industry partners to achieve product-driven results. My goal is to seek projects that align with my interests, values and that will allow me to evolve with a team driven by diverse ideas.
 
-**Research:** As part of my master's degree, I specialize in reinforcement learning and generative modeling. I'm particularly interested in the inverse reinforcement learning problem, where the goal is to recover the reward function from expert demonstrations. To this end, I'm working on an algorithm that leverage diffusion models to learn the reward function. The applications of this work are directly relevant to robotics, where defining the reward function is often challenging.
+**Research:** My research interests lie at the intersection of machine learning and control theory. Mainly, I focus on generative modeling applied to control problems. As part of my thesis, I'm exploring the application of diffusion models to imitation learning, with the aim of developing more efficient algorithms for learning from demonstrations. The applications of this work are directly relevant to the field of robotics, where defining a behavior or a reward function is often challenging in complex environments.
