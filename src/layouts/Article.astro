@@ -1,0 +1,346 @@
+---
+import Base from "@layouts/Base.astro";
+import { about, type ActiveSection } from "@data/site";
+
+type Heading = {
+  depth: number;
+  slug: string;
+  text: string;
+};
+
+interface Props {
+  title: string;
+  description: string;
+  date: Date | string;
+  author?: string;
+  affiliation?: string | string[];
+  headings?: Heading[];
+  showTableOfContents?: boolean;
+  activeSection?: ActiveSection;
+}
+
+const {
+  title,
+  description,
+  date,
+  author = `${about.firstname} ${about.lastname}`,
+  affiliation = about.affiliations.map(({ name }) => name),
+  headings = [],
+  showTableOfContents = true,
+  activeSection = "projects",
+} = Astro.props as Props;
+
+const dateValue = date instanceof Date ? date : new Date(date);
+const formattedDate = new Intl.DateTimeFormat("en-US", {
+  year: "numeric",
+  month: "long",
+  day: "numeric",
+  timeZone: "UTC",
+}).format(dateValue);
+
+const affiliations = Array.isArray(affiliation) ? affiliation : [affiliation];
+const tocHeadings = headings.filter((heading) => {
+  return heading.depth >= 2 && heading.depth <= 3 && heading.slug !== "footnote-label";
+});
+const hasTableOfContents = showTableOfContents && tocHeadings.length > 0;
+---
+
+<Base title={title} description={description} activeSection={activeSection}>
+  <main class="mx-auto w-full max-w-max-width flex-grow px-margin-mobile pb-24 pt-32 md:px-margin-desktop md:pt-36">
+    <div class:list={[
+      "grid gap-10 lg:gap-16",
+      hasTableOfContents ? "lg:grid-cols-[14rem_minmax(0,1fr)]" : "lg:grid-cols-1",
+    ]}>
+      {hasTableOfContents && (
+        <aside class="hidden self-start lg:sticky lg:top-28 lg:block">
+          <p class="mb-4 font-label text-label-sm uppercase text-outline">Contents</p>
+          <nav aria-label="Table of contents">
+            <ol class="space-y-3 border-l border-surface-variant pl-4">
+              {tocHeadings.map((heading) => (
+                <li class:list={[heading.depth === 3 && "pl-4"]}>
+                  <a class="block font-label text-label-sm text-secondary transition-colors hover:text-primary" href={`#${heading.slug}`}>
+                    {heading.text}
+                  </a>
+                </li>
+              ))}
+            </ol>
+          </nav>
+        </aside>
+      )}
+
+      <article class:list={["min-w-0", hasTableOfContents ? "max-w-3xl" : "mx-auto w-full max-w-3xl"]}>
+        <header class="border-b border-surface-variant pb-10">
+          <h1 class="mb-6 font-display text-display-lg-mobile text-primary md:text-display-lg">{title}</h1>
+          <dl class="flex flex-col gap-6 border-y border-surface-variant py-6 md:flex-row md:items-center md:gap-12">
+            <div>
+              <dt class="font-label text-label-sm uppercase text-outline">Author</dt>
+              <dd class="font-label text-label-md text-secondary">{author}</dd>
+            </div>
+            <div>
+              <dt class="font-label text-label-sm uppercase text-outline">Affiliation</dt>
+              <dd class="font-label text-label-md text-secondary">{affiliations.join(", ")}</dd>
+            </div>
+            <div>
+              <dt class="font-label text-label-sm uppercase text-outline">Date</dt>
+              <dd class="font-label text-label-md text-secondary"><time datetime={dateValue.toISOString()}>{formattedDate}</time></dd>
+            </div>
+          </dl>
+        </header>
+
+        <!-- <section class="border-b border-surface-variant py-8" aria-labelledby="article-abstract">
+          <h2 id="article-abstract" class="mb-4 font-label text-label-sm uppercase text-outline">Abstract</h2>
+          <p class="font-body text-body-lg text-on-surface-variant">{description}</p>
+        </section> -->
+        <section class="mb-16 border border-surface-variant bg-surface-container-high p-8">
+            <h2 class="mb-4 font-headline text-headline-sm text-primary">Abstract</h2>
+            <p class="font-body text-body-lg text-on-surface-variant">{description}</p>
+        </section>
+
+        {hasTableOfContents && (
+          <details class="mt-8 border border-surface-variant p-4 lg:hidden">
+            <summary class="cursor-pointer font-label text-label-md text-primary">Contents</summary>
+            <nav class="mt-4" aria-label="Mobile table of contents">
+              <ol class="space-y-3 border-l border-surface-variant pl-4">
+                {tocHeadings.map((heading) => (
+                  <li class:list={[heading.depth === 3 && "pl-4"]}>
+                    <a class="block font-label text-label-sm text-secondary transition-colors hover:text-primary" href={`#${heading.slug}`}>
+                      {heading.text}
+                    </a>
+                  </li>
+                ))}
+              </ol>
+            </nav>
+          </details>
+        )}
+
+        <div class="article-content mt-10">
+          <slot />
+        </div>
+      </article>
+    </div>
+  </main>
+</Base>
+
+<style>
+  .article-content :global(*) {
+    scroll-margin-top: 6rem;
+  }
+
+  .article-content :global(h1),
+  .article-content :global(h2),
+  .article-content :global(h3),
+  .article-content :global(h4) {
+    color: var(--color-primary);
+    font-family: var(--font-headline);
+    font-weight: 400;
+  }
+
+  .article-content :global(h1) {
+    margin-top: 3rem;
+    font-size: var(--text-headline-md);
+    line-height: var(--text-headline-md--line-height);
+  }
+
+  .article-content :global(h2) {
+    margin-top: 3.5rem;
+    border-top: 1px solid var(--color-surface-variant);
+    padding-top: 2rem;
+    font-size: var(--text-headline-md);
+    line-height: var(--text-headline-md--line-height);
+  }
+
+  .article-content :global(h3) {
+    margin-top: 2.5rem;
+    font-size: var(--text-headline-sm);
+    line-height: var(--text-headline-sm--line-height);
+  }
+
+  .article-content :global(h4) {
+    margin-top: 2rem;
+    font-size: var(--text-body-lg);
+    line-height: var(--text-body-lg--line-height);
+  }
+
+  .article-content :global(p),
+  .article-content :global(ul),
+  .article-content :global(ol),
+  .article-content :global(blockquote),
+  .article-content :global(figure),
+  .article-content :global(pre),
+  .article-content :global(table),
+  .article-content :global(.katex-display) {
+    margin-top: 1.25rem;
+  }
+
+  .article-content :global(p),
+  .article-content :global(li) {
+    color: var(--color-on-surface-variant);
+    font-family: var(--font-body);
+    font-size: var(--text-body-md);
+    line-height: var(--text-body-md--line-height);
+  }
+
+  .article-content :global(a) {
+    color: var(--color-primary);
+    text-decoration: underline;
+    text-decoration-color: var(--color-outline);
+    text-underline-offset: 0.2em;
+    transition: text-decoration-color 150ms ease;
+  }
+
+  .article-content :global(a:hover) {
+    text-decoration-color: var(--color-primary);
+  }
+
+  .article-content :global(ul),
+  .article-content :global(ol) {
+    padding-left: 1.5rem;
+  }
+
+  .article-content :global(ul) {
+    list-style: disc;
+  }
+
+  .article-content :global(ol) {
+    list-style: decimal;
+  }
+
+  .article-content :global(li + li) {
+    margin-top: 0.5rem;
+  }
+
+  .article-content :global(blockquote) {
+    border-left: 2px solid var(--color-accent);
+    padding-left: 1.25rem;
+  }
+
+  .article-content :global(code) {
+    border: 1px solid var(--color-surface-variant);
+    background: var(--color-surface-container-low);
+    padding: 0.1rem 0.3rem;
+    color: var(--color-primary);
+    font-family: var(--font-mono);
+    font-size: 0.9em;
+  }
+
+  .article-content :global(pre) {
+    overflow-x: auto;
+    border: 1px solid var(--color-surface-variant);
+    background: var(--color-surface-container-lowest);
+    padding: 1rem;
+  }
+
+  .article-content :global(pre code) {
+    border: 0;
+    background: transparent;
+    padding: 0;
+  }
+
+  .article-content :global(figure) {
+    margin-right: 0;
+    margin-left: 0;
+  }
+
+  .article-content :global(picture) {
+    display: block;
+  }
+
+  .article-content :global(img),
+  .article-content :global(video) {
+    display: block;
+    width: 100%;
+    height: auto;
+    max-width: 100%;
+    border: 1px solid var(--color-surface-variant);
+  }
+
+  .article-content :global(figcaption) {
+    margin-top: 0.75rem;
+    color: var(--color-outline);
+    font-family: var(--font-body);
+    font-size: var(--text-label-md);
+    line-height: var(--text-label-md--line-height);
+  }
+
+  .article-content :global(figcaption p) {
+    margin-top: 0;
+    color: inherit;
+    font-size: inherit;
+    line-height: inherit;
+  }
+
+  .article-content :global(figcaption p + p) {
+    margin-top: 0.5rem;
+  }
+
+  .article-content :global(.article-figure__credit) {
+    display: block;
+    margin-top: 0.25rem;
+    color: var(--color-outline);
+    font-family: var(--font-label);
+    font-size: var(--text-label-sm);
+    line-height: var(--text-label-sm--line-height);
+  }
+
+  .article-content :global(table) {
+    width: 100%;
+    border-collapse: collapse;
+    font-family: var(--font-body);
+  }
+
+  .article-content :global(th),
+  .article-content :global(td) {
+    border-bottom: 1px solid var(--color-surface-variant);
+    padding: 0.75rem;
+    text-align: left;
+  }
+
+  .article-content :global(th) {
+    color: var(--color-primary);
+    font-family: var(--font-label);
+    font-size: var(--text-label-sm);
+    text-transform: uppercase;
+  }
+
+  .article-content :global(.footnotes),
+  .article-content :global(#refs) {
+    margin-top: 3.5rem;
+    border-top: 1px solid var(--color-surface-variant);
+    padding-top: 2rem;
+  }
+
+  .article-content :global(.footnotes h2) {
+    margin-top: 0;
+    margin-bottom: 1rem;
+    border-top: 0;
+    padding-top: 0;
+    display: block;
+    position: static;
+    width: auto;
+    height: auto;
+    overflow: visible;
+    clip: auto;
+    clip-path: none;
+    white-space: normal;
+    color: var(--color-outline);
+    font-family: var(--font-label);
+    font-size: var(--text-label-sm);
+    line-height: var(--text-label-sm--line-height);
+    text-transform: uppercase;
+  }
+
+  .article-content :global(#refs::before) {
+    content: "References";
+    display: block;
+    margin-bottom: 1rem;
+    color: var(--color-outline);
+    font-family: var(--font-label);
+    font-size: var(--text-label-sm);
+    line-height: var(--text-label-sm--line-height);
+    text-transform: uppercase;
+  }
+
+  .article-content :global(.csl-entry + .csl-entry) {
+    margin-top: 1rem;
+  }
+</style>

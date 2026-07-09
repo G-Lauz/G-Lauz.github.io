@@ -1,0 +1,290 @@
+---
+import { Image } from "astro:assets";
+
+type FigureSource = string | {
+  src: string;
+  width?: number;
+  height?: number;
+};
+
+interface Props {
+  src: FigureSource;
+  mobileSrc?: FigureSource;
+  alt?: string;
+  caption?: string;
+  credit?: string;
+  media?: "image" | "video";
+  width?: number | string;
+  height?: number | string;
+  loading?: "eager" | "lazy";
+  decoding?: "sync" | "async" | "auto";
+  sizes?: string;
+  controls?: boolean;
+  autoplay?: boolean;
+  loop?: boolean;
+  muted?: boolean;
+  playsinline?: boolean;
+  preload?: "none" | "metadata" | "auto";
+  zoomable?: boolean;
+  class?: string;
+}
+
+const {
+  src,
+  mobileSrc,
+  alt = "",
+  caption,
+  credit,
+  media,
+  width,
+  height,
+  loading = "lazy",
+  decoding = "async",
+  sizes,
+  controls,
+  autoplay = false,
+  loop = false,
+  muted = false,
+  playsinline = false,
+  preload = "metadata",
+  zoomable = false,
+  class: className,
+  ...figureAttrs
+} = Astro.props as Props;
+
+const srcValue = typeof src === "string" ? src : src.src;
+const mobileSrcValue = mobileSrc ? (typeof mobileSrc === "string" ? mobileSrc : mobileSrc.src) : undefined;
+const inferredMedia = /\.(mp4|webm|ogg)(?:[?#].*)?$/i.test(srcValue) ? "video" : "image";
+const mediaType = media ?? inferredMedia;
+const widthValue = width ?? (typeof src === "string" ? undefined : src.width);
+const heightValue = height ?? (typeof src === "string" ? undefined : src.height);
+const hasCaption = caption || credit || Astro.slots.has("default");
+const canZoom = zoomable && mediaType === "image";
+---
+
+<figure {...figureAttrs} class:list={["article-figure", className]} data-figure-zoom={canZoom ? "" : undefined}>
+  {mediaType === "video" ? (
+    <video
+      src={srcValue}
+      controls={controls ?? true}
+      autoplay={autoplay}
+      loop={loop}
+      muted={muted}
+      playsinline={playsinline}
+      preload={preload}
+      width={widthValue}
+      height={heightValue}
+    >
+      {alt}
+    </video>
+  ) : mobileSrcValue ? (
+    <picture>
+      <source media="(max-width: 640px)" srcset={mobileSrcValue} />
+      {typeof src === "string" ? (
+        <img
+          src={srcValue}
+          alt={alt}
+          width={widthValue}
+          height={heightValue}
+          loading={loading}
+          decoding={decoding}
+          sizes={sizes}
+        />
+      ) : (
+        <Image
+          src={src}
+          alt={alt}
+          width={widthValue}
+          height={heightValue}
+          loading={loading}
+          decoding={decoding}
+          sizes={sizes}
+        />
+      )}
+    </picture>
+  ) : typeof src === "string" ? (
+    <img
+      src={srcValue}
+      alt={alt}
+      width={widthValue}
+      height={heightValue}
+      loading={loading}
+      decoding={decoding}
+      sizes={sizes}
+    />
+  ) : (
+    <Image
+      src={src}
+      alt={alt}
+      width={widthValue}
+      height={heightValue}
+      loading={loading}
+      decoding={decoding}
+      sizes={sizes}
+    />
+  )}
+
+  {hasCaption && (
+    <figcaption>
+      {Astro.slots.has("default") ? <slot /> : caption}
+      {credit && <span class="article-figure__credit">{credit}</span>}
+    </figcaption>
+  )}
+
+  {canZoom && (
+    <div
+      class="article-figure__overlay"
+      data-figure-zoom-overlay
+      hidden
+      aria-hidden="true"
+      aria-label="Zoomed figure. Scroll or click anywhere to close."
+      tabindex="-1"
+    >
+      {mobileSrcValue ? (
+        <picture>
+          <source media="(max-width: 640px)" srcset={mobileSrcValue} />
+          <img src={srcValue} alt={alt} loading="eager" decoding="async" />
+        </picture>
+      ) : (
+        <img src={srcValue} alt={alt} loading="eager" decoding="async" />
+      )}
+    </div>
+  )}
+</figure>
+
+<script>
+  function setupFigureZoom() {
+    document.querySelectorAll("[data-figure-zoom]").forEach((figure) => {
+      if (!(figure instanceof HTMLElement) || figure.dataset.zoomReady === "true") {
+        return;
+      }
+
+      const target = figure.querySelector(":scope > picture, :scope > img");
+      const overlay = figure.querySelector(":scope > [data-figure-zoom-overlay]");
+
+      if (!(target instanceof HTMLElement) || !(overlay instanceof HTMLElement)) {
+        return;
+      }
+
+      figure.dataset.zoomReady = "true";
+      target.setAttribute("role", "button");
+      target.setAttribute("tabindex", "0");
+      target.setAttribute("aria-label", "Open larger figure");
+
+      let touchStartY = 0;
+      const closeOverlay = () => {
+        if (overlay.hidden) {
+          return;
+        }
+
+        overlay.hidden = true;
+        overlay.setAttribute("aria-hidden", "true");
+        delete figure.dataset.zoomOpen;
+        window.removeEventListener("keydown", handleKeydown);
+        window.removeEventListener("scroll", closeOverlay);
+        window.removeEventListener("resize", closeOverlay);
+        window.removeEventListener("orientationchange", closeOverlay);
+        overlay.removeEventListener("wheel", closeOverlay);
+        overlay.removeEventListener("touchstart", handleTouchStart);
+        overlay.removeEventListener("touchmove", handleTouchMove);
+      };
+
+      const handleKeydown = (event) => {
+        if (event.key === "Escape") {
+          closeOverlay();
+        }
+      };
+
+      const handleTouchStart = (event) => {
+        touchStartY = event.touches[0]?.clientY ?? 0;
+      };
+
+      const handleTouchMove = (event) => {
+        const touchY = event.touches[0]?.clientY ?? touchStartY;
+
+        if (Math.abs(touchY - touchStartY) > 8) {
+          closeOverlay();
+        }
+      };
+
+      const openOverlay = () => {
+        if (!overlay.hidden) {
+          return;
+        }
+
+        overlay.hidden = false;
+        overlay.setAttribute("aria-hidden", "false");
+        figure.dataset.zoomOpen = "true";
+        overlay.focus({ preventScroll: true });
+        window.addEventListener("keydown", handleKeydown);
+        window.addEventListener("scroll", closeOverlay, { passive: true });
+        window.addEventListener("resize", closeOverlay, { passive: true });
+        window.addEventListener("orientationchange", closeOverlay, { passive: true });
+        overlay.addEventListener("wheel", closeOverlay, { passive: true });
+        overlay.addEventListener("touchstart", handleTouchStart, { passive: true });
+        overlay.addEventListener("touchmove", handleTouchMove, { passive: true });
+      };
+
+      target.addEventListener("click", openOverlay);
+      target.addEventListener("keydown", (event) => {
+        if (event.key !== "Enter" && event.key !== " ") {
+          return;
+        }
+
+        event.preventDefault();
+        openOverlay();
+      });
+
+      overlay.addEventListener("click", closeOverlay);
+    });
+  }
+
+  setupFigureZoom();
+  document.addEventListener("astro:after-swap", setupFigureZoom);
+</script>
+
+<style>
+  .article-figure[data-figure-zoom] > :is(img, picture) {
+    cursor: zoom-in;
+  }
+
+  .article-figure[data-figure-zoom] > :is(img, picture):focus-visible {
+    outline: 2px solid var(--color-accent);
+    outline-offset: 4px;
+  }
+
+  .article-figure__overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 1000;
+    display: grid;
+    place-items: center;
+    box-sizing: border-box;
+    min-height: 100dvh;
+    padding: max(0.75rem, env(safe-area-inset-top)) max(0.75rem, env(safe-area-inset-right)) max(0.75rem, env(safe-area-inset-bottom)) max(0.75rem, env(safe-area-inset-left));
+    background: rgba(0, 0, 0, 0.86);
+    cursor: zoom-out;
+    overflow: hidden;
+    overscroll-behavior: contain;
+    touch-action: pan-y;
+  }
+
+  .article-figure__overlay[hidden] {
+    display: none;
+  }
+
+  .article-figure .article-figure__overlay picture {
+    display: contents;
+  }
+
+  .article-figure .article-figure__overlay img {
+    width: auto;
+    max-width: min(100%, calc(100vw - 1.5rem));
+    max-height: calc(100dvh - 1.5rem);
+    height: auto;
+    border: 1px solid var(--color-surface-variant);
+    background: var(--color-surface-container-lowest);
+    object-fit: contain;
+    pointer-events: auto;
+  }
+</style>

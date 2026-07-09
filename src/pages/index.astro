@@ -1,0 +1,34 @@
+---
+import Base from "@layouts/Base.astro";
+
+import { about, site } from "@data/site";
+---
+
+<Base title={`About - ${site.name}`} description={site.description} activeSection="about">
+	<main class="mx-auto w-full max-w-max-width flex-grow px-margin-mobile py-28 md:px-margin-desktop md:py-36">
+		<section class="mb-24 grid grid-cols-1 items-start gap-8 lg:mb-32 lg:grid-cols-12 lg:gap-16">
+			<div class="relative h-[50vh] w-full lg:col-span-5 lg:h-[80vh]">
+				<img
+				alt={about.profilePicture.alt}
+				class="h-full w-full object-cover opacity-90 transition-opacity duration-500 hover:opacity-100"
+				src={about.profilePicture.path}
+				/>
+			</div>
+			<div class="flex h-full flex-col justify-center pt-8 lg:col-span-7 lg:pt-0">
+				<h1 class="mb-6 font-display text-display-lg-mobile text-primary md:text-display-lg">About Me</h1>
+				<div class="max-w-3xl space-y-6 font-body text-body-lg text-on-surface-variant">
+					<p>{about.bio}</p>
+					<p><strong>Research:</strong> {about.research}</p>
+				</div>
+				<div class="mt-12 flex flex-col gap-4 sm:flex-row">
+				<a class="inline-flex justify-center bg-primary px-6 py-3 font-label text-label-md text-[#121212] transition-colors hover:bg-surface-tint" href="#">
+					View Full CV
+				</a>
+				<a class="inline-flex justify-center border border-primary px-6 py-3 font-label text-label-md text-primary transition-colors hover:bg-surface-variant" href="/">
+					Contact Me
+				</a>
+				</div>
+			</div>
+		</section>
+	</main>
+</Base>
