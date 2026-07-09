@@ -51,14 +51,13 @@ export const about = {
     bio: "Guided by passion and a belief that every problem has a solution, I pursue research in collaboration with industry partners to achieve product-driven results. My goal is to seek projects that align with my interests, values and that will allow me to evolve with a team driven by diverse ideas.",
     research: "My research interests lie at the intersection of machine learning and control theory. Mainly, I focus on generative modeling applied to control problems. As part of my thesis, I’m exploring the application of diffusion models to imitation learning, with the aim of developing more efficient algorithms for learning from demonstrations. The applications of this work are directly relevant to the field of robotics, where defining a behavior or a reward function is often challenging in complex environments.",
     profilePicture: {
-        path: "./src/assets/profile.jpg",
         alt: "Gabriel Lauzier's profile picture",
     }
 }
 
 export const navItems = [
     { label: "About", href: "/", key: "about" },
-    { label: "Projects", href: "/projects", key: "projects" }
+    { label: "Projects", href: "/projects/", key: "projects" }
 ] satisfies Array<{ label: string; href: string; key: ActiveSection }>;
 
 export const footerLinks = [

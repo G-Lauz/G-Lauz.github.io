@@ -1,6 +1,6 @@
 ---
-import { getCollection, getEntry } from 'astro:content';
-import { ArrowRight, ChevronDown, ChevronLeft, ChevronRight } from '@lucide/astro';
+import { getCollection } from 'astro:content';
+import { ArrowRight, ChevronLeft, ChevronRight } from '@lucide/astro';
 
 import BaseLayout from '@layouts/Base.astro';
 
@@ -11,40 +11,41 @@ const projects = (await getCollection('projects')).sort(
 
 <BaseLayout title="Projects" description="A list of my projects." activeSection="projects">
     <main class="mx-auto w-full max-w-max-width flex-grow px-margin-mobile pb-24 pt-32 md:px-margin-desktop">
-        <header class="mb-16 flex flex-col gap-8 border-b border-surface-variant pb-8 md:mb-24 md:flex-row md:items-end md:justify-between">
+        <header class="mb-2 flex flex-col gap-8 border-b border-surface-variant pb-8 md:mb-4 md:flex-row md:items-end md:justify-between">
             <div>
                 <h1 class="mb-4 font-display text-display-lg-mobile text-primary md:text-display-lg">Projects</h1>
                 <p class="max-w-2xl font-body text-body-lg text-secondary">A list of my projects and way more text that could be handle by the desktop because im lazy as fuck so there we are.</p>
             </div>
         </header>
-        
-        <div class="flex flex-col">
-        {projects.map((project) => (
-            <article class="group relative flex flex-col items-start gap-6 border-b border-surface-variant py-12 md:flex-row md:gap-16 md:py-16">
-                <div class="flex w-full shrink-0 flex-row items-center justify-between gap-2 md:w-32 md:flex-col md:items-start md:justify-start">
-                    <time class="font-label text-label-sm uppercase text-secondary">
-                        {project.data.date.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}
-                    </time>
-                </div>
 
-                <div class="flex max-w-3xl flex-grow flex-col gap-4">
-                    <a class="block" href={`/projects/${project.id}`}>
-                        <h2 class="font-headline text-headline-md text-primary transition-colors duration-300 group-hover:text-surface-tint">
-                        {project.data.title}
-                        </h2>
-                    </a>
-                    <p class="font-body text-body-md text-secondary">{project.data.description}</p>
-                    <a
-                        class="mt-4 inline-flex w-max items-center gap-2 border-b border-transparent pb-0.5 font-label text-label-md text-primary opacity-80 transition-opacity hover:border-primary group-hover:opacity-100"
-                        href={`/projects/${project.id}`}
-                    >
-                        Read full article
-                        <ArrowRight aria-hidden="true" class="transition-transform group-hover:translate-x-1" size={18} stroke-width={1.75} />
-                    </a>
-                </div>
-            </article>
-        ))}
-      </div>
+        <div class="flex flex-col">
+            {projects.map((project) => (
+                <article class="group relative flex flex-col items-start gap-6 border-b border-surface-variant py-12 md:flex-row md:gap-16 md:py-16">
+                    <div class="flex w-full shrink-0 flex-row items-center justify-between gap-2 md:w-32 md:flex-col md:items-start md:justify-start">
+                        <time class="font-label text-label-sm uppercase text-secondary">
+                            {project.data.date.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}
+                        </time>
+                    </div>
+
+                    <div class="flex max-w-3xl flex-grow flex-col gap-4">
+                        <a class="block" href={`/projects/${project.id}/`} data-astro-prefetch="hover">
+                            <h2 class="font-headline text-headline-md text-primary transition-colors duration-300 group-hover:text-surface-tint">
+                            {project.data.title}
+                            </h2>
+                        </a>
+                        <p class="font-body text-body-md text-secondary">{project.data.description}</p>
+                        <a
+                            class="mt-4 inline-flex w-max items-center gap-2 border-b border-transparent pb-0.5 font-label text-label-md text-primary opacity-80 transition-opacity hover:border-primary group-hover:opacity-100"
+                            href={`/projects/${project.id}/`}
+                            data-astro-prefetch="hover"
+                        >
+                            Read full article
+                            <ArrowRight aria-hidden="true" class="transition-transform group-hover:translate-x-1" size={18} stroke-width={1.75} />
+                        </a>
+                    </div>
+                </article>
+            ))}
+        </div>
 
       <div class="mt-16 flex items-center justify-center gap-4">
         <button

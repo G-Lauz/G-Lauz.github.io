@@ -54,8 +54,10 @@ const {
 
 const srcValue = typeof src === "string" ? src : src.src;
 const mobileSrcValue = mobileSrc ? (typeof mobileSrc === "string" ? mobileSrc : mobileSrc.src) : undefined;
-const inferredMedia = /\.(mp4|webm|ogg)(?:[?#].*)?$/i.test(srcValue) ? "video" : "image";
+const videoExtension = srcValue.match(/\.(mp4|webm|ogg)(?:[?#].*)?$/i)?.[1].toLowerCase();
+const inferredMedia = videoExtension ? "video" : "image";
 const mediaType = media ?? inferredMedia;
+const videoType = mediaType === "video" && videoExtension ? `video/${videoExtension}` : undefined;
 const widthValue = width ?? (typeof src === "string" ? undefined : src.width);
 const heightValue = height ?? (typeof src === "string" ? undefined : src.height);
 const hasCaption = caption || credit || Astro.slots.has("default");
@@ -65,7 +67,6 @@ const canZoom = zoomable && mediaType === "image";
 <figure {...figureAttrs} class:list={["article-figure", className]} data-figure-zoom={canZoom ? "" : undefined}>
   {mediaType === "video" ? (
     <video
-      src={srcValue}
       controls={controls ?? true}
       autoplay={autoplay}
       loop={loop}
@@ -74,7 +75,10 @@ const canZoom = zoomable && mediaType === "image";
       preload={preload}
       width={widthValue}
       height={heightValue}
+      data-figure-video
+      transition:persist
     >
+      <source src={srcValue} type={videoType} />
       {alt}
     </video>
   ) : mobileSrcValue ? (
@@ -153,6 +157,23 @@ const canZoom = zoomable && mediaType === "image";
 </figure>
 
 <script>
+  function setupFigureVideos() {
+    document.querySelectorAll("video[data-figure-video]").forEach((video) => {
+      if (!(video instanceof HTMLVideoElement) || video.dataset.videoReady === "true") {
+        return;
+      }
+
+      video.dataset.videoReady = "true";
+      requestAnimationFrame(() => {
+        video.load();
+
+        if (video.autoplay && video.muted) {
+          video.play()?.catch(() => {});
+        }
+      });
+    });
+  }
+
   function setupFigureZoom() {
     document.querySelectorAll("[data-figure-zoom]").forEach((figure) => {
       if (!(figure instanceof HTMLElement) || figure.dataset.zoomReady === "true") {
@@ -240,7 +261,12 @@ const canZoom = zoomable && mediaType === "image";
   }
 
   setupFigureZoom();
-  document.addEventListener("astro:after-swap", setupFigureZoom);
+  setupFigureVideos();
+  document.addEventListener("astro:after-swap", () => {
+    setupFigureZoom();
+    setupFigureVideos();
+  });
+  document.addEventListener("astro:page-load", setupFigureVideos);
 </script>
 
 <style>

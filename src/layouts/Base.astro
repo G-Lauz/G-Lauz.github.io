@@ -22,7 +22,7 @@ const { title, description, activeSection } = Astro.props as Props;
     <Head title={title} description={description} />
   </head>
   <body>
-    <Header activeSection={activeSection} client:load />
+    <Header activeSection={activeSection} client:load transition:persist />
     <slot />
     <Footer />
   </body>

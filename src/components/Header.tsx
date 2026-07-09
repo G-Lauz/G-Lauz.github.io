@@ -12,7 +12,7 @@ export default function Header({ activeSection }: HeaderProps) {
   return (
     <header className="fixed top-0 z-50 w-full border-b border-surface-variant bg-background">
       <div className="mx-auto flex h-16 max-w-max-width items-center justify-between px-margin-mobile md:px-margin-desktop">
-        <a className="font-headline text-headline-sm text-primary" href="/">
+        <a className="font-headline text-headline-sm text-primary" href="/" data-astro-prefetch="load">
           {site.name}
         </a>
 

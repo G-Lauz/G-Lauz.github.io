@@ -1,4 +1,6 @@
 ---
+import { ClientRouter } from "astro:transitions";
+
 const { title, description, ...props } = Astro.props;
 ---
 
@@ -7,7 +9,8 @@ const { title, description, ...props } = Astro.props;
 
 <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 <link rel="icon" href="/favicon.ico" />
-
 <link rel="sitemap" href="/sitemap-index.xml" />
+
 <title>{title}</title>
 <meta name="description" content={description} />
+<ClientRouter />

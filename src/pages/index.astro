@@ -1,17 +1,24 @@
 ---
+import { Image } from "astro:assets";
 import Base from "@layouts/Base.astro";
 
 import { about, site } from "@data/site";
+import profilePicture from "../assets/profile.jpg";
 ---
 
 <Base title={`About - ${site.name}`} description={site.description} activeSection="about">
 	<main class="mx-auto w-full max-w-max-width flex-grow px-margin-mobile py-28 md:px-margin-desktop md:py-36">
 		<section class="mb-24 grid grid-cols-1 items-start gap-8 lg:mb-32 lg:grid-cols-12 lg:gap-16">
 			<div class="relative h-[50vh] w-full lg:col-span-5 lg:h-[80vh]">
-				<img
+				<Image
 				alt={about.profilePicture.alt}
 				class="h-full w-full object-cover opacity-90 transition-opacity duration-500 hover:opacity-100"
-				src={about.profilePicture.path}
+				decoding="async"
+				format="webp"
+				loading="eager"
+				quality={80}
+				src={profilePicture}
+				width={900}
 				/>
 			</div>
 			<div class="flex h-full flex-col justify-center pt-8 lg:col-span-7 lg:pt-0">
