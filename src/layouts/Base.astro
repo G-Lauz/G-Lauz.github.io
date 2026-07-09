@@ -22,6 +22,7 @@ const { title, description, activeSection } = Astro.props as Props;
     <Head title={title} description={description} />
   </head>
   <body>
+    <div id="route-loading-bar" aria-hidden="true" transition:persist="route-loading-bar"></div>
     <Header activeSection={activeSection} client:load transition:persist />
     <slot />
     <Footer />

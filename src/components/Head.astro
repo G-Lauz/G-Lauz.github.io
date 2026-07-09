@@ -14,3 +14,44 @@ const { title, description, ...props } = Astro.props;
 <title>{title}</title>
 <meta name="description" content={description} />
 <ClientRouter />
+
+<script is:inline>
+  if (!window.__routeLoadingBarInitialized) {
+    window.__routeLoadingBarInitialized = true;
+
+    let hideTimer;
+    let navigationId = 0;
+    let preparationComplete = false;
+
+    const setLoadingBarState = (state) => {
+      const bar = document.getElementById("route-loading-bar");
+      if (bar) {
+        bar.dataset.state = state;
+      }
+    };
+
+    document.addEventListener("astro:before-preparation", () => {
+      const currentNavigationId = ++navigationId;
+      preparationComplete = false;
+      window.clearTimeout(hideTimer);
+      setLoadingBarState("idle");
+
+      requestAnimationFrame(() => {
+        if (!preparationComplete && currentNavigationId === navigationId) {
+          setLoadingBarState("loading");
+        }
+      });
+    });
+
+    document.addEventListener("astro:after-preparation", () => {
+      preparationComplete = true;
+      setLoadingBarState("complete");
+    });
+
+    document.addEventListener("astro:page-load", () => {
+      hideTimer = window.setTimeout(() => {
+        setLoadingBarState("idle");
+      }, 180);
+    });
+  }
+</script>

@@ -1,5 +1,4 @@
 @import "tailwindcss";
-@import "katex/dist/katex.min.css";
 
 @theme {
     --color-background: #131313;
@@ -102,5 +101,41 @@
   &:hover {
     color: var(--color-accent) !important;
     border-color: var(--color-accent) !important;
+  }
+}
+
+#route-loading-bar {
+  position: fixed;
+  inset: 0 auto auto 0;
+  z-index: 2147483647;
+  width: 100%;
+  height: 2px;
+  pointer-events: none;
+  background: var(--color-accent);
+  box-shadow: 0 0 12px rgb(185 166 120 / 35%);
+  opacity: 0;
+  transform: scaleX(0);
+  transform-origin: left center;
+  transition:
+    transform 180ms ease-out,
+    opacity 160ms ease-out;
+}
+
+#route-loading-bar[data-state="loading"] {
+  opacity: 1;
+  transform: scaleX(0.72);
+  transition:
+    transform 900ms cubic-bezier(0.22, 1, 0.36, 1),
+    opacity 120ms ease-out;
+}
+
+#route-loading-bar[data-state="complete"] {
+  opacity: 1;
+  transform: scaleX(1);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  #route-loading-bar {
+    transition: opacity 120ms ease-out;
   }
 }
