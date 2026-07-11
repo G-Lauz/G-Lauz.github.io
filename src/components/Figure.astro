@@ -143,16 +143,7 @@ const canZoom = zoomable && mediaType === "image";
       aria-hidden="true"
       aria-label="Zoomed figure. Scroll or click anywhere to close."
       tabindex="-1"
-    >
-      {mobileSrcValue ? (
-        <picture>
-          <source media="(max-width: 640px)" srcset={mobileSrcValue} />
-          <img src={srcValue} alt={alt} loading="eager" decoding="async" />
-        </picture>
-      ) : (
-        <img src={srcValue} alt={alt} loading="eager" decoding="async" />
-      )}
-    </div>
+    ></div>
   )}
 </figure>
 
@@ -193,28 +184,28 @@ const canZoom = zoomable && mediaType === "image";
       target.setAttribute("aria-label", "Open larger figure");
 
       let touchStartY = 0;
+      let placeholder: HTMLElement | null = null;
       let activeAnimations: Animation[] = [];
-      const duration = 200;
       const getZoomTransform = () => {
-        const sourceImage = target.matches("img") ? target : target.querySelector("img");
-        const zoomedImage = overlay.querySelector("img");
+        const zoomedImage = target.matches("img") ? target : target.querySelector("img");
 
-        if (!(sourceImage instanceof HTMLImageElement) || !(zoomedImage instanceof HTMLImageElement)) {
-          return "scale(0.8)";
+        if (!placeholder || !(zoomedImage instanceof HTMLImageElement)) {
+          return "none";
         }
 
-        const sourceRect = sourceImage.getBoundingClientRect();
+        const sourceRect = placeholder.getBoundingClientRect();
         const zoomedRect = zoomedImage.getBoundingClientRect();
         const x = sourceRect.left + sourceRect.width / 2 - (zoomedRect.left + zoomedRect.width / 2);
         const y = sourceRect.top + sourceRect.height / 2 - (zoomedRect.top + zoomedRect.height / 2);
-        const scale = Math.min(sourceRect.width / zoomedRect.width, sourceRect.height / zoomedRect.height, 0.82);
+        const scaleX = sourceRect.width / zoomedRect.width;
+        const scaleY = sourceRect.height / zoomedRect.height;
 
-        return `translate(${x}px, ${y}px) scale(${scale})`;
+        return `translate(${x}px, ${y}px) scale(${scaleX}, ${scaleY})`;
       };
 
       const animateZoom = (opening: boolean) => {
         activeAnimations.forEach((animation) => animation.cancel());
-        const zoomedImage = overlay.querySelector("img");
+        const zoomedImage = target.matches("img") ? target : target.querySelector("img");
         const zoomTransform = getZoomTransform();
         const easing = "cubic-bezier(0.2, 0.8, 0.2, 1)";
         const imageFrames = opening
@@ -225,11 +216,11 @@ const canZoom = zoomable && mediaType === "image";
           : [{ opacity: 1 }, { opacity: 0 }];
 
         activeAnimations = [
-          overlay.animate(overlayFrames, { duration, easing, fill: "both" }),
+          overlay.animate(overlayFrames, { duration: 200, easing, fill: "both" }),
         ];
 
         if (zoomedImage) {
-          activeAnimations.push(zoomedImage.animate(imageFrames, { duration, easing, fill: "both" }));
+          activeAnimations.push(zoomedImage.animate(imageFrames, { duration: 100, easing, fill: "both" }));
         }
 
         return Promise.allSettled(activeAnimations.map((animation) => animation.finished));
@@ -249,8 +240,17 @@ const canZoom = zoomable && mediaType === "image";
         overlay.removeEventListener("touchstart", handleTouchStart);
         overlay.removeEventListener("touchmove", handleTouchMove);
         await animateZoom(false);
+        activeAnimations.forEach((animation) => animation.cancel());
+
+        if (placeholder) {
+          placeholder.replaceWith(target);
+          placeholder = null;
+        }
+
         overlay.hidden = true;
         overlay.setAttribute("aria-hidden", "true");
+        target.setAttribute("aria-label", "Open larger figure");
+        target.focus({ preventScroll: true });
         delete figure.dataset.zoomOpen;
       };
 
@@ -277,9 +277,21 @@ const canZoom = zoomable && mediaType === "image";
           return;
         }
 
+        const targetRect = target.getBoundingClientRect();
+        const targetStyle = getComputedStyle(target);
+        placeholder = document.createElement("div");
+        placeholder.setAttribute("aria-hidden", "true");
+        placeholder.style.boxSizing = "border-box";
+        placeholder.style.display = targetStyle.display;
+        placeholder.style.width = `${targetRect.width}px`;
+        placeholder.style.height = `${targetRect.height}px`;
+        placeholder.style.margin = `${targetStyle.marginTop} ${targetStyle.marginRight} ${targetStyle.marginBottom} ${targetStyle.marginLeft}`;
+        target.before(placeholder);
         overlay.hidden = false;
         overlay.setAttribute("aria-hidden", "false");
         figure.dataset.zoomOpen = "open";
+        target.setAttribute("aria-label", "Close larger figure");
+        overlay.append(target);
         overlay.focus({ preventScroll: true });
         window.addEventListener("keydown", handleKeydown);
         window.addEventListener("scroll", closeOverlay, { passive: true });
