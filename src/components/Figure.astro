@@ -193,14 +193,54 @@ const canZoom = zoomable && mediaType === "image";
       target.setAttribute("aria-label", "Open larger figure");
 
       let touchStartY = 0;
-      const closeOverlay = () => {
-        if (overlay.hidden) {
+      let activeAnimations: Animation[] = [];
+      const duration = 200;
+      const getZoomTransform = () => {
+        const sourceImage = target.matches("img") ? target : target.querySelector("img");
+        const zoomedImage = overlay.querySelector("img");
+
+        if (!(sourceImage instanceof HTMLImageElement) || !(zoomedImage instanceof HTMLImageElement)) {
+          return "scale(0.8)";
+        }
+
+        const sourceRect = sourceImage.getBoundingClientRect();
+        const zoomedRect = zoomedImage.getBoundingClientRect();
+        const x = sourceRect.left + sourceRect.width / 2 - (zoomedRect.left + zoomedRect.width / 2);
+        const y = sourceRect.top + sourceRect.height / 2 - (zoomedRect.top + zoomedRect.height / 2);
+        const scale = Math.min(sourceRect.width / zoomedRect.width, sourceRect.height / zoomedRect.height, 0.82);
+
+        return `translate(${x}px, ${y}px) scale(${scale})`;
+      };
+
+      const animateZoom = (opening: boolean) => {
+        activeAnimations.forEach((animation) => animation.cancel());
+        const zoomedImage = overlay.querySelector("img");
+        const zoomTransform = getZoomTransform();
+        const easing = "cubic-bezier(0.2, 0.8, 0.2, 1)";
+        const imageFrames = opening
+          ? [{ transform: zoomTransform }, { transform: "none" }]
+          : [{ transform: "none" }, { transform: zoomTransform }];
+        const overlayFrames = opening
+          ? [{ opacity: 0 }, { opacity: 1 }]
+          : [{ opacity: 1 }, { opacity: 0 }];
+
+        activeAnimations = [
+          overlay.animate(overlayFrames, { duration, easing, fill: "both" }),
+        ];
+
+        if (zoomedImage) {
+          activeAnimations.push(zoomedImage.animate(imageFrames, { duration, easing, fill: "both" }));
+        }
+
+        return Promise.allSettled(activeAnimations.map((animation) => animation.finished));
+      };
+
+      const closeOverlay = async () => {
+        if (overlay.hidden || figure.dataset.zoomOpen === "closing") {
           return;
         }
 
-        overlay.hidden = true;
-        overlay.setAttribute("aria-hidden", "true");
-        delete figure.dataset.zoomOpen;
+        figure.dataset.zoomOpen = "closing";
         window.removeEventListener("keydown", handleKeydown);
         window.removeEventListener("scroll", closeOverlay);
         window.removeEventListener("resize", closeOverlay);
@@ -208,6 +248,10 @@ const canZoom = zoomable && mediaType === "image";
         overlay.removeEventListener("wheel", closeOverlay);
         overlay.removeEventListener("touchstart", handleTouchStart);
         overlay.removeEventListener("touchmove", handleTouchMove);
+        await animateZoom(false);
+        overlay.hidden = true;
+        overlay.setAttribute("aria-hidden", "true");
+        delete figure.dataset.zoomOpen;
       };
 
       const handleKeydown = (event) => {
@@ -228,14 +272,14 @@ const canZoom = zoomable && mediaType === "image";
         }
       };
 
-      const openOverlay = () => {
+      const openOverlay = async () => {
         if (!overlay.hidden) {
           return;
         }
 
         overlay.hidden = false;
         overlay.setAttribute("aria-hidden", "false");
-        figure.dataset.zoomOpen = "true";
+        figure.dataset.zoomOpen = "open";
         overlay.focus({ preventScroll: true });
         window.addEventListener("keydown", handleKeydown);
         window.addEventListener("scroll", closeOverlay, { passive: true });
@@ -244,6 +288,13 @@ const canZoom = zoomable && mediaType === "image";
         overlay.addEventListener("wheel", closeOverlay, { passive: true });
         overlay.addEventListener("touchstart", handleTouchStart, { passive: true });
         overlay.addEventListener("touchmove", handleTouchMove, { passive: true });
+        await new Promise<void>((resolve) => requestAnimationFrame(() => resolve()));
+
+        if (figure.dataset.zoomOpen !== "open") {
+          return;
+        }
+
+        await animateZoom(true);
       };
 
       target.addEventListener("click", openOverlay);
@@ -312,5 +363,6 @@ const canZoom = zoomable && mediaType === "image";
     background: var(--color-surface-container-lowest);
     object-fit: contain;
     pointer-events: auto;
+    transform-origin: center;
   }
 </style>
