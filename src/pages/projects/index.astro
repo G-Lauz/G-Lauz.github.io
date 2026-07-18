@@ -28,14 +28,14 @@ const pageCount = Math.ceil(projects.length / projectsPerPage);
                         <div class="absolute inset-0 z-0 overflow-hidden md:right-auto md:w-80">
                             <Image
                                 alt={project.data.thumbnailAlt ?? ''}
-                                class="h-full w-full object-cover opacity-35 transition-transform duration-500 group-hover:scale-105 md:opacity-55"
+                                class="project-thumbnail h-full w-full object-cover opacity-35 transition-transform duration-500 group-hover:scale-105 md:opacity-55"
                                 decoding="async"
                                 loading="lazy"
                                 src={project.data.thumbnail}
                                 widths={[640, 1099]}
                             />
                             <span aria-hidden="true" class="absolute inset-0 bg-linear-to-b from-surface/45 via-surface/80 to-surface md:hidden"></span>
-                            <span aria-hidden="true" class="absolute inset-0 hidden bg-linear-to-r from-transparent via-surface/75 to-surface md:block"></span>
+                            <span aria-hidden="true" class="absolute inset-0 hidden bg-linear-to-r from-transparent via-surface/70 to-surface md:block"></span>
                         </div>
                     )}
 
@@ -100,6 +100,18 @@ const pageCount = Math.ceil(projects.length / projectsPerPage);
       }
     </main>
 </BaseLayout>
+
+<style>
+  :global(html:not(.dark)) .project-thumbnail {
+    opacity: 0.72;
+  }
+
+  @media (min-width: 48rem) {
+    :global(html:not(.dark)) .project-thumbnail {
+      opacity: 0.82;
+    }
+  }
+</style>
 
 <script>
   function setupPagination() {

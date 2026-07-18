@@ -59,15 +59,26 @@ export default function Header({ activeSection }: HeaderProps) {
           </button>
         </nav>
 
-        <button
-          aria-expanded={isOpen}
-          aria-label="Toggle navigation"
-          className="inline-flex h-10 w-10 items-center justify-center border border-surface-variant text-primary transition-colors hover:bg-surface-container md:hidden"
-          type="button"
-          onClick={() => setIsOpen((current) => !current)}
-        >
-          {isOpen ? <X aria-hidden="true" size={20} /> : <Menu aria-hidden="true" size={20} />}
-        </button>
+        <div className="flex items-center gap-2 md:hidden">
+          <button
+            aria-label={isDark ? 'Switch to light mode' : 'Switch to dark mode'}
+            className="inline-flex h-10 w-10 items-center justify-center border border-surface-variant text-primary transition-colors hover:bg-surface-container"
+            title={isDark ? 'Switch to light mode' : 'Switch to dark mode'}
+            type="button"
+            onClick={toggleTheme}
+          >
+            {isDark ? <Sun aria-hidden="true" size={20} strokeWidth={1.75} /> : <Moon aria-hidden="true" size={20} strokeWidth={1.75} />}
+          </button>
+          <button
+            aria-expanded={isOpen}
+            aria-label="Toggle navigation"
+            className="inline-flex h-10 w-10 items-center justify-center border border-surface-variant text-primary transition-colors hover:bg-surface-container"
+            type="button"
+            onClick={() => setIsOpen((current) => !current)}
+          >
+            {isOpen ? <X aria-hidden="true" size={20} /> : <Menu aria-hidden="true" size={20} />}
+          </button>
+        </div>
       </div>
 
       {isOpen && (
