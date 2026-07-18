@@ -1,5 +1,5 @@
-import { Menu, Moon, X } from 'lucide-react';
-import { useState } from 'react';
+import { Menu, Moon, Sun, X } from 'lucide-react';
+import { useEffect, useState } from 'react';
 import { navItems, site, type ActiveSection } from '../data/site';
 
 type HeaderProps = {
@@ -8,6 +8,19 @@ type HeaderProps = {
 
 export default function Header({ activeSection }: HeaderProps) {
   const [isOpen, setIsOpen] = useState(false);
+  const [isDark, setIsDark] = useState(false);
+
+  useEffect(() => {
+    setIsDark(document.documentElement.classList.contains('dark'));
+  }, []);
+
+  const toggleTheme = () => {
+    const nextIsDark = !document.documentElement.classList.contains('dark');
+
+    document.documentElement.classList.toggle('dark', nextIsDark);
+    localStorage.setItem('theme', nextIsDark ? 'dark' : 'light');
+    setIsDark(nextIsDark);
+  };
 
   return (
     <header className="fixed top-0 z-50 w-full border-b border-surface-variant bg-background">
@@ -35,9 +48,15 @@ export default function Header({ activeSection }: HeaderProps) {
               </a>
             );
           })}
-          <span className="ml-4 inline-flex text-on-surface-variant" aria-label="Dark mode enabled" title="Dark mode">
-            <Moon aria-hidden="true" size={20} strokeWidth={1.75} />
-          </span>
+          <button
+            aria-label={isDark ? 'Switch to light mode' : 'Switch to dark mode'}
+            className="ml-4 inline-flex text-on-surface-variant transition-colors hover:text-primary"
+            title={isDark ? 'Switch to light mode' : 'Switch to dark mode'}
+            type="button"
+            onClick={toggleTheme}
+          >
+            {isDark ? <Sun aria-hidden="true" size={20} strokeWidth={1.75} /> : <Moon aria-hidden="true" size={20} strokeWidth={1.75} />}
+          </button>
         </nav>
 
         <button

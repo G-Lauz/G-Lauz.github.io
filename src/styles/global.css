@@ -1,26 +1,26 @@
 @import "tailwindcss";
 
 @theme {
-    --color-background: #131313;
-    --color-surface: #131313;
-    --color-surface-dim: #131313;
-    --color-surface-container-lowest: #0e0e0e;
-    --color-surface-container-low: #1c1b1b;
-    --color-surface-container: #201f1f;
-    --color-surface-container-high: #2a2a2a;
-    --color-surface-container-highest: #353534;
-    --color-surface-variant: #353534;
-    --color-surface-bright: #393939;
-    --color-surface-tint: #c9c6c2;
-    --color-primary: #ffffff;
-    --color-on-primary: #31302d;
-    --color-secondary: #c7c6c6;
-    --color-on-surface: #e5e2e1;
-    --color-on-surface-variant: #c8c7be;
-    --color-on-background: #e5e2e1;
-    --color-outline: #929189;
-    --color-outline-variant: #474741;
-    --color-accent: #b9a678;
+    --color-background: #fdf9f5;
+    --color-surface: #fdf9f5;
+    --color-surface-dim: #e5e2de;
+    --color-surface-container-lowest: #ffffff;
+    --color-surface-container-low: #f7f3ef;
+    --color-surface-container: #f1eeea;
+    --color-surface-container-high: #ebe8e4;
+    --color-surface-container-highest: #e5e2de;
+    --color-surface-variant: #d1cec9;
+    --color-surface-bright: #ffffff;
+    --color-surface-tint: #5f5d59;
+    --color-primary: #1b1b1a;
+    --color-on-primary: #ffffff;
+    --color-secondary: #5f5d59;
+    --color-on-surface: #1b1b1a;
+    --color-on-surface-variant: #494743;
+    --color-on-background: #1b1b1a;
+    --color-outline: #777570;
+    --color-outline-variant: #c9c6c1;
+    --color-accent: #7f6f46;
 
     --spacing-gutter: 24px;
     --spacing-margin-mobile: 20px;
@@ -54,11 +54,38 @@
     --text-display-lg--line-height: 56px;
 }
 
+html.dark {
+  --color-background: #131313;
+  --color-surface: #131313;
+  --color-surface-dim: #131313;
+  --color-surface-container-lowest: #0e0e0e;
+  --color-surface-container-low: #1c1b1b;
+  --color-surface-container: #201f1f;
+  --color-surface-container-high: #2a2a2a;
+  --color-surface-container-highest: #353534;
+  --color-surface-variant: #353534;
+  --color-surface-bright: #393939;
+  --color-surface-tint: #c9c6c2;
+  --color-primary: #ffffff;
+  --color-on-primary: #31302d;
+  --color-secondary: #c7c6c6;
+  --color-on-surface: #e5e2e1;
+  --color-on-surface-variant: #c8c7be;
+  --color-on-background: #e5e2e1;
+  --color-outline: #929189;
+  --color-outline-variant: #474741;
+  --color-accent: #b9a678;
+}
+
 @layer base {
   html {
-    color-scheme: dark;
+    color-scheme: light;
     overflow-x: clip;
     scroll-behavior: smooth;
+  }
+
+  html.dark {
+    color-scheme: dark;
   }
 
   body {
