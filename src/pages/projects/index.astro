@@ -1,0 +1,173 @@
+---
+import { Image } from 'astro:assets';
+import { getCollection } from 'astro:content';
+import { ArrowRight, ChevronLeft, ChevronRight } from '@lucide/astro';
+
+import BaseLayout from '@layouts/Base.astro';
+
+const projects = (await getCollection('projects', ({ data }) => !import.meta.env.PROD || !data.draft)).sort(
+    (a, b) => b.data.date.getTime() - a.data.date.getTime()
+);
+const projectsPerPage = 5;
+const pageCount = Math.ceil(projects.length / projectsPerPage);
+---
+
+<BaseLayout title="Projects" description="A list of my projects." activeSection="projects">
+    <main class="mx-auto w-full max-w-max-width flex-grow px-margin-mobile pt-18 md:px-margin-desktop md:pt-26 lg:pt-20">
+        <header class="flex flex-col gap-8 border-b border-surface-variant pb-8 md:flex-row md:items-end md:justify-between">
+            <div>
+                <h1 class="mb-4 font-display text-display-lg-mobile text-primary md:text-display-lg">Projects</h1>
+                <p class="max-w-2xl font-body text-body-lg text-secondary">A growing collection of my projects.</p>
+            </div>
+        </header>
+
+        <div class="flex flex-col">
+            {projects.map((project) => (
+                <article data-project-item class="group relative flex flex-col items-start gap-6 border-b border-surface-variant py-8 md:py-0">
+                    {project.data.thumbnail && (
+                        <div class="absolute inset-0 z-0 overflow-hidden md:right-auto md:w-80">
+                            <Image
+                                alt={project.data.thumbnailAlt ?? ''}
+                                class="project-thumbnail h-full w-full object-cover opacity-35 transition-transform duration-500 group-hover:scale-105 md:opacity-55"
+                                decoding="async"
+                                loading="lazy"
+                                src={project.data.thumbnail}
+                                widths={[640, 1099]}
+                            />
+                            <span aria-hidden="true" class="absolute inset-0 bg-linear-to-b from-surface/45 via-surface/80 to-surface md:hidden"></span>
+                            <span aria-hidden="true" class="absolute inset-0 hidden bg-linear-to-r from-transparent via-surface/70 to-surface md:block"></span>
+                        </div>
+                    )}
+
+                    <div class="relative z-10 flex max-w-3xl flex-grow flex-col gap-4 md:py-8 md:pl-48">
+                        <time class="font-label text-label-sm uppercase text-secondary">
+                            {project.data.date.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}
+                        </time>
+                        <a class="block" href={`/projects/${project.id}/`} data-astro-prefetch="hover">
+                            <h2 class="font-headline text-headline-md text-primary transition-colors duration-300 group-hover:text-surface-tint">
+                            {project.data.title}
+                            </h2>
+                        </a>
+                        <p class="font-body text-body-md text-secondary">{project.data.description}</p>
+                        <a
+                            class="mt-4 inline-flex w-max items-center gap-2 border-b border-transparent pb-0.5 font-label text-label-md text-primary opacity-80 transition-opacity hover:border-primary group-hover:opacity-100"
+                            href={`/projects/${project.id}/`}
+                            data-astro-prefetch="hover"
+                        >
+                            Read full article
+                            <ArrowRight aria-hidden="true" class="transition-transform group-hover:translate-x-1" size={18} stroke-width={1.75} />
+                        </a>
+                    </div>
+                </article>
+            ))}
+        </div>
+
+      {
+      <nav data-pagination data-projects-per-page={projectsPerPage} class="flex items-center justify-center gap-4 py-8" aria-label="Project pages">
+        <button
+          data-pagination-previous
+          aria-label="Previous page"
+          class="flex h-10 w-10 items-center justify-center border border-surface-variant text-secondary transition-colors hover:border-primary hover:text-primary disabled:opacity-30"
+          disabled
+          type="button"
+        >
+          <ChevronLeft aria-hidden="true" size={18} stroke-width={1.75} />
+        </button>
+        <div class="flex items-center gap-2 font-label text-label-md text-secondary">
+          {Array.from({ length: pageCount }, (_, index) => (
+            <button
+              data-pagination-page={index + 1}
+              aria-current={index === 0 ? 'page' : undefined}
+              class:list={[
+                'w-6 text-center',
+                index === 0 ? 'border-b border-primary text-primary' : 'text-secondary hover:text-primary',
+              ]}
+              type="button"
+            >
+              {index + 1}
+            </button>
+          ))}
+        </div>
+        <button
+          data-pagination-next
+          aria-label="Next page"
+          class="flex h-10 w-10 items-center justify-center border border-surface-variant text-secondary transition-colors hover:border-primary hover:text-primary"
+          type="button"
+        >
+          <ChevronRight aria-hidden="true" size={18} stroke-width={1.75} />
+        </button>
+      </nav>
+      }
+    </main>
+</BaseLayout>
+
+<style>
+  :global(html:not(.dark)) .project-thumbnail {
+    opacity: 0.72;
+  }
+
+  @media (min-width: 48rem) {
+    :global(html:not(.dark)) .project-thumbnail {
+      opacity: 0.82;
+    }
+  }
+</style>
+
+<script>
+  function setupPagination() {
+    const pagination = document.querySelector<HTMLElement>('[data-pagination]');
+
+    if (!pagination || pagination.dataset.ready === 'true') {
+      return;
+    }
+
+    const projects = Array.from(document.querySelectorAll<HTMLElement>('[data-project-item]'));
+    const projectsPerPage = Number(pagination.dataset.projectsPerPage);
+    const previous = pagination.querySelector<HTMLButtonElement>('[data-pagination-previous]');
+    const next = pagination.querySelector<HTMLButtonElement>('[data-pagination-next]');
+    const pageButtons = Array.from(pagination.querySelectorAll<HTMLButtonElement>('[data-pagination-page]'));
+
+    if (!previous || !next || pageButtons.length === 0) {
+      return;
+    }
+
+    let currentPage = 1;
+
+    const showPage = (page: number) => {
+      currentPage = page;
+      const firstProject = (currentPage - 1) * projectsPerPage;
+
+      projects.forEach((project, index) => {
+        project.hidden = index < firstProject || index >= firstProject + projectsPerPage;
+      });
+
+      previous.disabled = currentPage === 1;
+      next.disabled = currentPage === pageButtons.length;
+
+      pageButtons.forEach((button, index) => {
+        const isCurrentPage = index + 1 === currentPage;
+        if (isCurrentPage) {
+          button.setAttribute('aria-current', 'page');
+        } else {
+          button.removeAttribute('aria-current');
+        }
+        button.classList.toggle('border-b', isCurrentPage);
+        button.classList.toggle('border-primary', isCurrentPage);
+        button.classList.toggle('text-primary', isCurrentPage);
+        button.classList.toggle('text-secondary', !isCurrentPage);
+      });
+    };
+
+    previous.addEventListener('click', () => showPage(currentPage - 1));
+    next.addEventListener('click', () => showPage(currentPage + 1));
+    pageButtons.forEach((button, index) => {
+      button.addEventListener('click', () => showPage(index + 1));
+    });
+
+    pagination.dataset.ready = 'true';
+    showPage(currentPage);
+  }
+
+  setupPagination();
+  document.addEventListener('astro:page-load', setupPagination);
+</script>

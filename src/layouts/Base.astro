@@ -1,0 +1,30 @@
+---
+import Head from "@components/Head.astro";
+import Header from "@components/Header";
+import Footer from "@components/Footer.astro";
+
+import type { ActiveSection } from "@data/site";
+
+import "@styles/global.css";
+
+interface Props {
+  title: string;
+  description: string;
+  activeSection: ActiveSection;
+}
+
+const { title, description, activeSection } = Astro.props as Props;
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <Head title={title} description={description} />
+  </head>
+  <body>
+    <div id="route-loading-bar" aria-hidden="true" transition:persist="route-loading-bar"></div>
+    <Header activeSection={activeSection} client:load transition:persist />
+    <slot />
+    <Footer />
+  </body>
+</html>

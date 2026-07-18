@@ -1,0 +1,68 @@
+---
+import { ClientRouter } from "astro:transitions";
+
+const { title, description, ...props } = Astro.props;
+---
+
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+
+<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+<link rel="icon" href="/favicon.ico" />
+<link rel="sitemap" href="/sitemap-index.xml" />
+
+<title>{title}</title>
+<meta name="description" content={description} />
+<script is:inline>
+  function applyTheme() {
+    const savedTheme = localStorage.getItem("theme");
+    const isDark = savedTheme ? savedTheme === "dark" : window.matchMedia("(prefers-color-scheme: dark)").matches;
+
+    document.documentElement.classList.toggle("dark", isDark);
+  }
+
+  document.addEventListener("astro:after-swap", applyTheme);
+  applyTheme();
+</script>
+<ClientRouter />
+
+<script is:inline>
+  if (!window.__routeLoadingBarInitialized) {
+    window.__routeLoadingBarInitialized = true;
+
+    let hideTimer;
+    let navigationId = 0;
+    let preparationComplete = false;
+
+    const setLoadingBarState = (state) => {
+      const bar = document.getElementById("route-loading-bar");
+      if (bar) {
+        bar.dataset.state = state;
+      }
+    };
+
+    document.addEventListener("astro:before-preparation", () => {
+      const currentNavigationId = ++navigationId;
+      preparationComplete = false;
+      window.clearTimeout(hideTimer);
+      setLoadingBarState("idle");
+
+      requestAnimationFrame(() => {
+        if (!preparationComplete && currentNavigationId === navigationId) {
+          setLoadingBarState("loading");
+        }
+      });
+    });
+
+    document.addEventListener("astro:after-preparation", () => {
+      preparationComplete = true;
+      setLoadingBarState("complete");
+    });
+
+    document.addEventListener("astro:page-load", () => {
+      hideTimer = window.setTimeout(() => {
+        setLoadingBarState("idle");
+      }, 180);
+    });
+  }
+</script>

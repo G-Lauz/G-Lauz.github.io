@@ -1,0 +1,79 @@
+---
+import { Image } from "astro:assets";
+import { BriefcaseBusiness, Building2, Code, Mail } from "@lucide/astro";
+import Base from "@layouts/Base.astro";
+
+import { about, site } from "@data/site";
+import profilePicture from "../assets/profile.jpg";
+
+const emailAddress = about.email.replace("mailto:", "");
+---
+
+<Base title={`About - ${site.name}`} description={site.description} activeSection="about">
+	<main class="mx-auto w-full max-w-max-width flex-grow px-margin-mobile pt-18 pb-10 md:px-margin-desktop md:pt-26 lg:pt-20 lg:pb-6">
+		<section class="mb-2 grid grid-cols-1 items-start gap-8 lg:mb-2 lg:grid-cols-12 lg:gap-x-16 lg:gap-y-0">
+			<div class="order-2 relative mx-auto w-full max-w-64 lg:order-1 lg:col-span-5 lg:row-span-2 lg:max-w-none">
+				<Image
+				alt={about.profilePicture.alt}
+				class="h-auto w-full opacity-90 transition-opacity duration-500 hover:opacity-100"
+				decoding="async"
+				format="webp"
+				loading="eager"
+				quality={90}
+				src={profilePicture}
+				width={900}
+				/>
+			</div>
+			<div class="order-1 flex h-full flex-col justify-center lg:order-2 lg:col-span-7">
+				<div class="pb-4 border-b border-outline-variant">
+					<h1 class="mb-2 font-display text-display-lg-mobile text-primary md:text-display-lg">About Me</h1>
+					<div class="space-y-1 font-body text-body-lg text-on-surface-variant">
+						<p>{about.title}</p>
+						<ul class="font-body text-body-md leading-tight text-on-surface-variant">
+							{about.courses.map((course) => (
+								<li>
+									{course.name}: {course.acronyms.map((acronym, index) => (
+										<>{index > 0 && ", "}<a class="text-primary underline underline-offset-4 hover:text-surface-tint" href={acronym.url} rel="noreferrer" target="_blank">{acronym.name}</a></>
+									))}
+								</li>
+							))}
+						</ul>
+						<div class="flex flex-wrap gap-x-5 gap-y-2 pt-1">
+							{about.affiliations.map((affiliation) => (
+								<a class="inline-flex items-center gap-2 transition-colors hover:text-primary" href={affiliation.url} rel="noreferrer" target="_blank">
+									<Building2 aria-hidden="true" size={18} />
+									{affiliation.name}
+								</a>
+							))}
+						</div>
+						<div>
+							<div class="mt-4 flex flex-wrap gap-x-5 gap-y-3 font-label text-label-md text-primary">
+								<a class="inline-flex items-center gap-2 transition-colors hover:text-surface-tint" href={about.email}>
+									<Mail aria-hidden="true" size={18} />
+									Email
+								</a>
+								<a class="inline-flex items-center gap-2 transition-colors hover:text-surface-tint" href={about.github} rel="noreferrer" target="_blank">
+									<Code aria-hidden="true" size={18} />
+									GitHub
+								</a>
+								<a class="inline-flex items-center gap-2 transition-colors hover:text-surface-tint" href={about.linkedin} rel="noreferrer" target="_blank">
+									<BriefcaseBusiness aria-hidden="true" size={18} />
+									LinkedIn
+								</a>
+							</div>
+							<p class="font-label text-label-sm text-secondary text-on-surface-variant">Email is the best way to reach me.</p>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="order-3 lg:col-span-7">
+				<div class="pb-4 border-b border-outline-variant">
+					<div class="max-w-3xl space-y-4 font-body text-body-lg text-on-surface-variant">
+						<p>{about.bio}</p>
+						<p><strong>Research:</strong> {about.research}</p>
+					</div>
+				</div>
+			</div>
+		</section>
+	</main>
+</Base>

@@ -1,0 +1,168 @@
+@import "tailwindcss";
+
+@theme {
+    --color-background: #fdf9f5;
+    --color-surface: #fdf9f5;
+    --color-surface-dim: #e5e2de;
+    --color-surface-container-lowest: #ffffff;
+    --color-surface-container-low: #f7f3ef;
+    --color-surface-container: #f1eeea;
+    --color-surface-container-high: #ebe8e4;
+    --color-surface-container-highest: #e5e2de;
+    --color-surface-variant: #d1cec9;
+    --color-surface-bright: #ffffff;
+    --color-surface-tint: #5f5d59;
+    --color-primary: #1b1b1a;
+    --color-on-primary: #ffffff;
+    --color-secondary: #5f5d59;
+    --color-on-surface: #1b1b1a;
+    --color-on-surface-variant: #494743;
+    --color-on-background: #1b1b1a;
+    --color-outline: #777570;
+    --color-outline-variant: #c9c6c1;
+    --color-accent: #7f6f46;
+
+    --spacing-gutter: 24px;
+    --spacing-margin-mobile: 20px;
+    --spacing-margin-desktop: 64px;
+    --spacing-max-width: 1280px;
+    --spacing-unit: 4px;
+
+    --font-body: Inter, ui-sans-serif, system-ui, sans-serif;
+    --font-label: Inter, ui-sans-serif, system-ui, sans-serif;
+    --font-headline: "Libre Caslon Text", Georgia, serif;
+    --font-display: "Libre Caslon Text", Georgia, serif;
+    --font-mono: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
+
+    --text-label-sm: 12px;
+    --text-label-sm--line-height: 16px;
+    --text-label-sm--font-weight: 600;
+    --text-label-md: 14px;
+    --text-label-md--line-height: 20px;
+    --text-label-md--font-weight: 500;
+    --text-body-md: 16px;
+    --text-body-md--line-height: 26px;
+    --text-body-lg: 18px;
+    --text-body-lg--line-height: 30px;
+    --text-headline-sm: 24px;
+    --text-headline-sm--line-height: 32px;
+    --text-headline-md: 32px;
+    --text-headline-md--line-height: 40px;
+    --text-display-lg-mobile: 36px;
+    --text-display-lg-mobile--line-height: 44px;
+    --text-display-lg: 48px;
+    --text-display-lg--line-height: 56px;
+}
+
+html.dark {
+  --color-background: #131313;
+  --color-surface: #131313;
+  --color-surface-dim: #131313;
+  --color-surface-container-lowest: #0e0e0e;
+  --color-surface-container-low: #1c1b1b;
+  --color-surface-container: #201f1f;
+  --color-surface-container-high: #2a2a2a;
+  --color-surface-container-highest: #353534;
+  --color-surface-variant: #353534;
+  --color-surface-bright: #393939;
+  --color-surface-tint: #c9c6c2;
+  --color-primary: #ffffff;
+  --color-on-primary: #31302d;
+  --color-secondary: #c7c6c6;
+  --color-on-surface: #e5e2e1;
+  --color-on-surface-variant: #c8c7be;
+  --color-on-background: #e5e2e1;
+  --color-outline: #929189;
+  --color-outline-variant: #474741;
+  --color-accent: #b9a678;
+}
+
+@layer base {
+  html {
+    color-scheme: light;
+    overflow-x: clip;
+    scroll-behavior: smooth;
+  }
+
+  html.dark {
+    color-scheme: dark;
+  }
+
+  body {
+    overflow-x: clip;
+    min-height: 100vh;
+    background: var(--color-background);
+    color: var(--color-on-background);
+    font-family: var(--font-body);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  a {
+    text-decoration: none;
+  }
+
+  button,
+  select {
+    font: inherit;
+  }
+}
+
+.btn-pdf {
+  color: var(--color-primary) !important;
+  border: 1px solid var(--color-primary) !important;
+  display: inline-flex;
+  align-items: center;
+  vertical-align: middle;
+  width: fit-content;
+  white-space: nowrap;
+  line-height: 1;
+  font-size: 0.5em;
+  border-radius: 0.25rem;
+  padding: .1rem .4rem;
+  margin: 0;
+  text-decoration: none !important;
+
+  cursor: pointer;
+
+  &:hover {
+    color: var(--color-accent) !important;
+    border-color: var(--color-accent) !important;
+  }
+}
+
+#route-loading-bar {
+  position: fixed;
+  inset: 0 auto auto 0;
+  z-index: 2147483647;
+  width: 100%;
+  height: 2px;
+  pointer-events: none;
+  background: var(--color-accent);
+  box-shadow: 0 0 12px rgb(185 166 120 / 35%);
+  opacity: 0;
+  transform: scaleX(0);
+  transform-origin: left center;
+  transition:
+    transform 180ms ease-out,
+    opacity 160ms ease-out;
+}
+
+#route-loading-bar[data-state="loading"] {
+  opacity: 1;
+  transform: scaleX(0.72);
+  transition:
+    transform 900ms cubic-bezier(0.22, 1, 0.36, 1),
+    opacity 120ms ease-out;
+}
+
+#route-loading-bar[data-state="complete"] {
+  opacity: 1;
+  transform: scaleX(1);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  #route-loading-bar {
+    transition: opacity 120ms ease-out;
+  }
+}
