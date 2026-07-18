@@ -2,6 +2,7 @@
 title: "A Technical Note on Control Systems"
 description: "An introduction to a discrete-time control formulation."
 date: 2026-07-08
+draft: true
 ---
 
 This is an inline equation: $x_{k+1} = Ax_k + Bu_k$.

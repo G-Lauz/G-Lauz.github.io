@@ -5,7 +5,7 @@ import Article from '@layouts/Article.astro';
 
 export async function getStaticPaths() {
   const posts: CollectionEntry<'projects'>[] = await getCollection('projects', ({ data }: CollectionEntry<'projects'>) => {
-    return !data.draft;
+    return !import.meta.env.PROD || !data.draft;
   });
 
   return posts.map((post) => ({
