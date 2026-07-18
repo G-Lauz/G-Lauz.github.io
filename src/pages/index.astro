@@ -46,19 +46,22 @@ const emailAddress = about.email.replace("mailto:", "");
 								</a>
 							))}
 						</div>
-						<div class="mt-4 flex flex-wrap gap-x-5 gap-y-3 font-label text-label-md text-primary">
-							<a class="inline-flex items-center gap-2 transition-colors hover:text-surface-tint" href={about.email}>
-								<Mail aria-hidden="true" size={18} />
-								Email
-							</a>
-							<a class="inline-flex items-center gap-2 transition-colors hover:text-surface-tint" href={about.github} rel="noreferrer" target="_blank">
-								<Code aria-hidden="true" size={18} />
-								GitHub
-							</a>
-							<a class="inline-flex items-center gap-2 transition-colors hover:text-surface-tint" href={about.linkedin} rel="noreferrer" target="_blank">
-								<BriefcaseBusiness aria-hidden="true" size={18} />
-								LinkedIn
-							</a>
+						<div>
+							<div class="mt-4 flex flex-wrap gap-x-5 gap-y-3 font-label text-label-md text-primary">
+								<a class="inline-flex items-center gap-2 transition-colors hover:text-surface-tint" href={about.email}>
+									<Mail aria-hidden="true" size={18} />
+									Email
+								</a>
+								<a class="inline-flex items-center gap-2 transition-colors hover:text-surface-tint" href={about.github} rel="noreferrer" target="_blank">
+									<Code aria-hidden="true" size={18} />
+									GitHub
+								</a>
+								<a class="inline-flex items-center gap-2 transition-colors hover:text-surface-tint" href={about.linkedin} rel="noreferrer" target="_blank">
+									<BriefcaseBusiness aria-hidden="true" size={18} />
+									LinkedIn
+								</a>
+							</div>
+							<p class="font-label text-label-sm text-secondary text-on-surface-variant">Email is the best way to reach me.</p>
 						</div>
 					</div>
 				</div>

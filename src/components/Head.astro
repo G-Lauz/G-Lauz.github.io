@@ -14,10 +14,15 @@ const { title, description, ...props } = Astro.props;
 <title>{title}</title>
 <meta name="description" content={description} />
 <script is:inline>
-  const savedTheme = localStorage.getItem("theme");
-  const isDark = savedTheme ? savedTheme === "dark" : window.matchMedia("(prefers-color-scheme: dark)").matches;
+  function applyTheme() {
+    const savedTheme = localStorage.getItem("theme");
+    const isDark = savedTheme ? savedTheme === "dark" : window.matchMedia("(prefers-color-scheme: dark)").matches;
 
-  document.documentElement.classList.toggle("dark", isDark);
+    document.documentElement.classList.toggle("dark", isDark);
+  }
+
+  document.addEventListener("astro:after-swap", applyTheme);
+  applyTheme();
 </script>
 <ClientRouter />
 
